@@ -155,6 +155,35 @@ sup.cite{font-size:10px;margin-left:2px}
 sup.cite a{text-decoration:none;font-family:var(--mono)}
 ol.srcl li{scroll-margin-top:20px}
 ol.srcl li:target{background:var(--blue-l)}
+/* ===== 1ページ要約（印刷・転送用） ===== */
+details.opwrap{margin:18px 0 0}
+details.opwrap>summary{cursor:pointer;font-size:13px;color:var(--blue-d);font-weight:700;padding:8px 0;list-style:none}
+details.opwrap>summary::before{content:"▸ ";color:var(--blue)}
+details.opwrap[open]>summary::before{content:"▾ "}
+.onepager{background:#fff;border:1px solid var(--line);border-radius:6px;padding:20px 24px;margin:6px 0 0}
+.op-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
+.op-actions button{font:inherit;font-size:12.5px;padding:5px 12px;border:1px solid var(--blue);background:#fff;color:var(--blue-d);border-radius:4px;cursor:pointer}
+.op-actions button:hover{background:var(--blue-l)}
+.op-head{display:flex;justify-content:space-between;align-items:baseline;gap:6px 14px;flex-wrap:wrap;border-bottom:2px solid var(--navy);padding-bottom:6px;margin-bottom:6px}
+.op-title{font-weight:700;color:var(--navy);font-size:16px;line-height:1.5}
+.op-meta{font-size:11.5px;color:var(--muted)}
+.onepager h5{font-size:11.5px;color:var(--blue-d);margin:12px 0 2px;letter-spacing:.08em;font-weight:700}
+.onepager ol,.onepager ul{margin:2px 0;padding-left:1.4em;font-size:13.5px;line-height:1.7}
+.onepager p{font-size:13.5px;line-height:1.7;margin:2px 0}
+.op-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 22px}
+.op-kpi{display:flex;gap:6px 16px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.op-kpi b{font-size:15px;color:var(--navy);margin-right:3px;font-feature-settings:"tnum"}
+.op-foot{font-size:11px;color:var(--muted);margin-top:12px;border-top:1px solid var(--line);padding-top:6px;line-height:1.6}
+@media (max-width:960px){.op-grid{grid-template-columns:1fr}}
+@media print{
+  @page{size:A4;margin:12mm}
+  details.opwrap>summary,.op-actions{display:none}
+  .onepager{border:none;padding:0;margin:0;break-after:page}
+  .onepager ol,.onepager ul,.onepager p{font-size:9.5pt;line-height:1.55}
+  .op-title{font-size:13pt}
+  body.print-summary main > *:not(details.opwrap){display:none !important}
+  body.print-summary .onepager{break-after:auto}
+}
 </style>
 </head>
 <body>
@@ -167,6 +196,7 @@ ol.srcl li:target{background:var(--blue-l)}
 <nav class="toc" aria-label="目次">
   <div class="brand">{{BRAND（例：PROJECT ／ STRATEGY BRIEF）}}</div>
   <a href="#top">はじめに・結論の要約</a>
+  <a href="#summary">1ページ要約（印刷・転送用）</a>
   <a class="ch" href="#ch1"><span>01</span>現状整理</a>
   <a href="#s11">{{1-1 見出し}}</a>
   <a href="#s12">ここまでの経緯</a>
@@ -195,6 +225,26 @@ ol.srcl li:target{background:var(--blue-l)}
   <div class="meta"><span>作成：{{日付}}（{{更新日}}更新）</span><span>{{作成者}}（整理と評価：Claude）</span><span>元資料：{{主な元資料}}</span><span>{{社外秘／チーム内}}</span></div>
 </header>
 
+<!-- ★1ページ要約（印刷・転送用）。data-auto の欄は、空なら本文から自動で埋まる。手で書いた欄はそのまま使われる -->
+<details class="opwrap" id="summary">
+  <summary>1ページ要約（印刷・転送用）</summary>
+  <div class="onepager" id="onepager">
+    <div class="op-actions"><button type="button" data-act="print-summary">要約だけ印刷</button><button type="button" data-act="copy">テキストでコピー</button><button type="button" data-act="print-all">全体を印刷</button><span class="op-msg small"></span></div>
+    <div class="op-body">
+      <div class="op-head"><div class="op-title">{{タイトル}}｜1ページ要約</div><div class="op-meta">{{YYYY.MM.DD}} v{{版}}・{{作成者}}・{{配布範囲}}</div></div>
+      <h5>この資料で決めたいこと</h5><ol data-auto="decisions"></ol>
+      <h5>結論</h5><ol data-auto="conclusions"></ol>
+      <div class="op-grid">
+        <div><h5>仮説</h5><p data-auto="hypothesis"></p></div>
+        <div><h5>主要な数字</h5><div class="op-kpi" data-auto="kpi"></div></div>
+      </div>
+      <h5>最優先の論点と仮の答え</h5><ul data-auto="questions"></ul>
+      <h5>次の一手</h5><ol data-auto="next"></ol>
+      <div class="op-foot">全体版：{{ファイル名またはNotionのリンク}}。事実・仮説・見立ての区別と出典は全体版を参照。</div>
+    </div>
+  </div>
+</details>
+
 <section>
   <p class="lead">{{リード文：何の事業で、いま何の段階で、この資料は何のためにあるか。3〜4文}}</p>
   <div class="legendbar">
@@ -208,7 +258,7 @@ ol.srcl li:target{background:var(--blue-l)}
   <div class="card dark">
     <div class="code"><b>●</b> DECISIONS NEEDED</div>
     <h4>この資料で決めたいこと</h4>
-    <ol><li>{{決めたいこと1}}</li><li>{{決めたいこと2}}</li></ol>
+    <ol id="decisions"><li>{{決めたいこと1}}</li><li>{{決めたいこと2}}</li></ol>
   </div>
 
   <!-- ★改善：前回からの変更（v2以降のみ） -->
@@ -316,7 +366,7 @@ ol.srcl li:target{background:var(--blue-l)}
   <p class="lead">{{第2章を踏まえ、何を仮説として置くか}}</p>
 
   <h3 id="s31"><span class="no">3-1</span>仮説を一文で</h3>
-  <div class="card key"><p style="font-size:16px;font-weight:700;color:var(--navy);margin:0">{{仮説の一文}}</p></div>
+  <div class="card key"><p id="hyp1" style="font-size:16px;font-weight:700;color:var(--navy);margin:0">{{仮説の一文}}</p></div>
 
   <h3 id="s32"><span class="no">3-2</span>{{N}}つの仮説と確かめ方</h3>
   <div class="tblwrap"><table class="tight brk">
@@ -339,7 +389,7 @@ ol.srcl li:target{background:var(--blue-l)}
   </div>
 
   <h3 id="s3z"><span class="no">3-4</span>次の一手</h3>
-  <ol><li>{{行動。誰が、いつまでに}}</li></ol>
+  <ol id="next"><li>{{行動。誰が、いつまでに}}</li></ol>
 </section>
 
 <!-- ============ 第4章 ============ -->
@@ -382,5 +432,57 @@ ol.srcl li:target{background:var(--blue-l)}
 <footer><span>{{BRAND}}</span><span>{{CONFIDENTIAL}}　{{YYYY.MM.DD}}　v{{版}}</span></footer>
 </main>
 </div>
+<script>
+/* 1ページ要約：空の欄を本文から自動で埋め、印刷・コピーを行う。中身が書いてある欄はそのまま使う */
+(function(){
+  var op=document.getElementById('onepager'); if(!op) return;
+  var wrap=op.closest('details');
+  function all(s){return Array.prototype.slice.call(document.querySelectorAll(s));}
+  function txt(e){return e?e.textContent.replace(/\s+/g,' ').trim():'';}
+  function first(t){t=(t||'').trim();var i=t.indexOf('。');return i>0?t.slice(0,i+1):t;}
+  function fill(key,items,max){
+    var el=op.querySelector('[data-auto="'+key+'"]'); if(!el) return;
+    if(!el.textContent.trim()){
+      items.filter(function(x){return x;}).slice(0,max||99).forEach(function(t){
+        var li=document.createElement(el.tagName==='P'?'span':'li'); li.textContent=t; el.appendChild(li);
+      });
+    }
+    if(!el.textContent.trim()){ el.hidden=true; var h=el.previousElementSibling; if(h&&h.tagName==='H5') h.hidden=true; }
+  }
+  fill('decisions',all('#decisions li').map(txt),3);
+  fill('conclusions',all('.concl .c').map(function(c){var p=c.querySelector('p'),b=c.querySelector('b');if(!b) return first(txt(p));var rest=txt(p).slice(txt(b).length).trim();return txt(b)+(rest?' '+first(rest):'');}),4);
+  fill('hypothesis',[txt(document.getElementById('hyp1'))],1);
+  var tiles=all('.tiles .tile').slice(0,4);
+  var kpi=op.querySelector('[data-auto="kpi"]');
+  if(kpi&&!kpi.textContent.trim()){tiles.forEach(function(t){var s=document.createElement('span');var b=document.createElement('b');b.textContent=txt(t.querySelector('.v'));s.appendChild(b);s.appendChild(document.createTextNode(txt(t.querySelector('.l'))));kpi.appendChild(s);});}
+  if(kpi&&!kpi.textContent.trim()){kpi.hidden=true;var h=kpi.previousElementSibling;if(h)h.hidden=true;}
+  fill('questions',all('.q').filter(function(q){return !q.querySelector('.pri.b');}).map(function(q){
+    var a='';all('#'+q.id+' dt').forEach(function(dt){if(/仮の答え/.test(dt.textContent)) a=first(txt(dt.nextElementSibling));});
+    return txt(q.querySelector('.t'))+(a?' → '+a:'');
+  }),4);
+  fill('next',all('#next li').map(txt),3);
+
+  function openIt(){ if(wrap) wrap.open=true; }
+  window.addEventListener('beforeprint',openIt);
+  window.addEventListener('afterprint',function(){document.body.classList.remove('print-summary');});
+  var msg=op.querySelector('.op-msg');
+  op.querySelector('[data-act="print-summary"]').addEventListener('click',function(){openIt();document.body.classList.add('print-summary');window.print();});
+  op.querySelector('[data-act="print-all"]').addEventListener('click',function(){openIt();window.print();});
+  op.querySelector('[data-act="copy"]').addEventListener('click',function(){
+    openIt();
+    var body=op.querySelector('.op-body'), lines=[];
+    Array.prototype.forEach.call(body.querySelectorAll('.op-title,.op-meta,h5,li,p,.op-kpi span,.op-foot'),function(e){
+      if(e.closest('[hidden]')) return;
+      if(e.tagName==='P'&&e.closest('li')) return;
+      var t=txt(e); if(!t) return;
+      if(e.tagName==='H5') lines.push('','■ '+t); else if(e.tagName==='LI') lines.push('・'+t);
+      else if(e.parentNode&&e.parentNode.getAttribute&&e.parentNode.getAttribute('data-auto')==='kpi') lines.push('・'+t); else lines.push(t);
+    });
+    var text=lines.join('\n');
+    function done(ok){ if(msg){msg.textContent=ok?'コピーしました':'コピーできませんでした。手で選択してください';setTimeout(function(){msg.textContent='';},2500);} }
+    try{ navigator.clipboard.writeText(text).then(function(){done(true);},function(){done(false);}); }catch(e){ done(false); }
+  });
+})();
+</script>
 </body>
 </html>
