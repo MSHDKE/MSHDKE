@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{タイトル}}（戦略ブリーフ）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+
+:root{
+  --navy:#10203A; --navy-bg:#0E1B2E; --blue:#1470FF; --blue-d:#0B55CC; --blue-l:#EAF2FF; --blue-on-dark:#70B3FF;
+  --txt:#232B38; --muted:#555C66; --axis:#C9CACE; --line:#E3E6EB; --bg:#F5F6FA; --card:#FFFFFF;
+  --neg:#B5432F; --neg-l:#FBEDE9; --neg-m:#F3CFC6; --pos-l:#E3EEFF; --pos-m:#BBD5FF; --neutral:#EEF0F3;
+  --mono:Consolas,"SFMono-Regular",Menlo,monospace;
+  --sans:"Noto Sans JP","Yu Gothic UI","Hiragino Kaku Gothic ProN","Meiryo",sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:var(--sans);font-size:15px;line-height:1.85;-webkit-font-smoothing:antialiased}
+a{color:var(--blue-d)}
+.wrap{display:grid;grid-template-columns:250px minmax(0,1fr);max-width:1240px;margin:0 auto}
+nav.toc{position:sticky;top:0;align-self:start;height:100vh;overflow:auto;padding:28px 18px 28px 24px;border-right:1px solid var(--line);font-size:12.5px;line-height:1.6}
+nav.toc .brand{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--muted);margin-bottom:14px}
+nav.toc a{display:block;color:var(--muted);text-decoration:none;padding:3px 0 3px 10px;border-left:2px solid transparent}
+nav.toc a:hover{color:var(--navy);border-left-color:var(--blue)}
+nav.toc a.ch{color:var(--navy);font-weight:700;margin-top:14px;padding-left:0;border-left:none}
+nav.toc a.ch span{font-family:var(--mono);font-weight:400;color:var(--blue);margin-right:8px}
+main{padding:0 44px 80px;min-width:0}
+header.cover{padding:44px 0 30px;border-bottom:1px solid var(--line)}
+header.cover img{width:300px;max-width:70%;height:auto;display:block;margin-bottom:26px}
+.code{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;color:var(--muted)}
+.code b{color:var(--blue);font-weight:400}
+h1{font-size:30px;line-height:1.4;margin:10px 0 10px;color:var(--navy);font-weight:700;letter-spacing:.01em}
+header.cover .sub{color:var(--muted);font-size:14px;margin:0}
+header.cover .meta{margin-top:18px;font-size:12.5px;color:var(--muted);display:flex;gap:22px;flex-wrap:wrap}
+section.ch{padding-top:54px}
+section.ch > .chhead{display:flex;align-items:baseline;justify-content:space-between;border-bottom:2px solid var(--navy);padding-bottom:8px;margin-bottom:8px}
+h2{font-size:23px;margin:6px 0 0;color:var(--navy);font-weight:700}
+h3{font-size:17px;margin:38px 0 10px;color:var(--navy);font-weight:700;display:flex;align-items:baseline;gap:10px}
+h3 .no{font-family:var(--mono);font-weight:400;color:var(--blue);font-size:13px;letter-spacing:.06em;flex:none}
+h4{font-size:14.5px;margin:22px 0 6px;color:var(--navy);font-weight:700}
+p{margin:8px 0}
+.lead{font-size:15.5px;color:var(--txt);margin:14px 0 6px}
+ul,ol{margin:8px 0;padding-left:1.4em}
+li{margin:3px 0}
+.small{font-size:12.5px;color:var(--muted);line-height:1.7}
+.src{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.65}
+.tag{display:inline-block;font-size:11px;line-height:1;padding:4px 7px;border-radius:3px;margin-right:6px;vertical-align:2px;white-space:nowrap;font-weight:500}
+.tag.f{border:1px solid var(--axis);color:var(--muted);background:#fff}
+.tag.h{border:1px solid var(--blue);color:var(--blue-d);background:#fff}
+.tag.v{background:var(--navy);color:#fff;border:1px solid var(--navy)}
+.legendbar{display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin:14px 0 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:18px 22px;margin:14px 0}
+.card.key{border-left:3px solid var(--blue)}
+.card.dark{background:var(--navy-bg);color:#E8EDF5;border-color:var(--navy-bg)}
+.card.dark h4{color:#fff;margin-top:0}
+.card.dark .code{color:#9FB0C8}
+.card.dark .code b{color:var(--blue-on-dark)}
+.card h4:first-child{margin-top:0}
+.concl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0}
+.concl .c{background:#fff;border:1px solid var(--line);border-radius:6px;padding:16px 18px}
+.concl .c .n{font-family:var(--mono);color:var(--blue);font-size:12px;letter-spacing:.1em}
+.concl .c p{margin:4px 0 0;font-size:14px;line-height:1.75}
+.concl .c b{color:var(--navy)}
+.tiles{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:14px 0}
+.tile{background:#fff;border:1px solid var(--line);border-radius:6px;padding:12px 14px}
+.tile .l{font-size:11.5px;color:var(--muted);line-height:1.5}
+.tile .v{font-size:23px;font-weight:700;color:var(--navy);line-height:1.3;margin-top:4px;font-feature-settings:"tnum"}
+.tile .v small{font-size:12px;font-weight:500;color:var(--muted);margin-left:2px}
+.tile .d{font-size:11.5px;color:var(--muted);line-height:1.5;margin-top:2px}
+.tblwrap{overflow-x:auto;margin:12px 0}
+table{border-collapse:collapse;width:100%;font-size:13.5px;line-height:1.7;background:#fff}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+thead th{font-size:12px;color:var(--muted);font-weight:500;border-bottom:1.5px solid var(--navy);background:#fff;white-space:nowrap}
+tbody th{font-weight:700;color:var(--navy);white-space:nowrap}
+tbody th.wrapok{white-space:normal}
+td.num,th.num{text-align:right;font-feature-settings:"tnum";white-space:nowrap}
+table.tight th,table.tight td{padding:7px 10px}
+tr.hl td,tr.hl th{background:var(--blue-l)}
+td.c{text-align:center;white-space:nowrap}
+.mk{display:inline-flex;align-items:center;gap:6px;font-weight:700;white-space:nowrap}
+.mk i{font-style:normal;display:inline-block;width:22px;height:22px;line-height:22px;text-align:center;border-radius:50%;font-size:13px}
+.mk.ok i{background:var(--pos-m);color:var(--navy)}
+.mk.mid i{background:var(--neutral);color:var(--navy);border:1px solid var(--axis)}
+.mk.ng i{background:var(--neg-m);color:#5A1E12}
+.mk.q i{background:#fff;color:var(--muted);border:1px dashed var(--muted)}
+/* 収支の表（赤字・黒字の濃淡。数字そのものを必ず表示する） */
+td.h{ text-align:right;font-feature-settings:"tnum";white-space:nowrap;border-left:2px solid #fff}
+td.h.n2{background:var(--neg-m)} td.h.n1{background:var(--neg-l)} td.h.z{background:var(--neutral)} td.h.p1{background:var(--pos-l)} td.h.p2{background:var(--pos-m)}
+.keyrow{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:6px;align-items:center}
+.keyrow span i{display:inline-block;width:14px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+/* 横棒 */
+.bars{background:#fff;border:1px solid var(--line);border-radius:6px;padding:14px 18px;margin:12px 0}
+.bars .ttl{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:8px}
+.bar{display:grid;grid-template-columns:minmax(150px,34%) 1fr 96px;gap:10px;align-items:center;padding:4px 0;font-size:13px}
+.bar .lab{color:var(--txt);line-height:1.45}
+.bar .lab small{display:block;color:var(--muted);font-size:11.5px}
+.bar .trk{height:14px;position:relative}
+.bar .trk i{display:block;height:14px;border-radius:0 4px 4px 0;background:var(--axis);min-width:2px}
+.bar.em .trk i{background:var(--blue)}
+.bar .val{text-align:right;font-feature-settings:"tnum";font-weight:700;color:var(--navy);white-space:nowrap}
+.bar.sub .val{font-weight:500;color:var(--txt)}
+.fig{background:#fff;border:1px solid var(--line);border-radius:6px;padding:16px 18px;margin:12px 0}
+.fig .ttl{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.fig svg{width:100%;height:auto;display:block}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.q{background:#fff;border:1px solid var(--line);border-radius:6px;margin:14px 0;overflow:hidden}
+.q .qh{display:flex;gap:14px;align-items:baseline;padding:14px 20px 10px;border-bottom:1px solid var(--line)}
+.q .qh .n{font-family:var(--mono);color:var(--blue);font-size:13px;letter-spacing:.08em;flex:none}
+.q .qh .t{font-weight:700;color:var(--navy);font-size:16px;line-height:1.55}
+.q .qb{padding:6px 20px 14px}
+.q dl{display:grid;grid-template-columns:118px minmax(0,1fr);gap:0;margin:0}
+.q dt{font-size:12px;color:var(--muted);padding:9px 0;border-bottom:1px solid var(--line);line-height:1.7}
+.q dd{margin:0;padding:8px 0 8px 12px;border-bottom:1px solid var(--line);font-size:13.5px;line-height:1.75}
+.q dl > dt:last-of-type,.q dl > dd:last-of-type{border-bottom:none}
+.q dd.ask{font-weight:500;color:var(--navy)}
+.q dd ul{margin:0;padding-left:1.2em}
+.pri{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:#fff;background:var(--blue);padding:3px 7px;border-radius:3px;margin-left:auto;flex:none;white-space:nowrap}
+.pri.b{background:#fff;color:var(--muted);border:1px solid var(--axis)}
+footer{margin-top:60px;padding-top:16px;border-top:1px solid var(--line);font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+@media (max-width:960px){
+  .wrap{display:block}
+  nav.toc{position:static;height:auto;border-right:none;border-bottom:1px solid var(--line);padding:16px}
+  main{padding:0 16px 60px}
+  .tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .concl,.two{grid-template-columns:1fr}
+  .q dl{grid-template-columns:1fr}
+  .q dt{border-bottom:none;padding-bottom:0}
+  .q dd{padding-left:0}
+  h1{font-size:24px}
+}
+@media print{
+  body{background:#fff;font-size:11pt}
+  nav.toc{display:none}
+  .wrap{display:block;max-width:none}
+  main{padding:0}
+  section.ch{break-before:page;padding-top:0}
+  .card,.q,.fig,.bars,table,.tile,.concl .c{break-inside:avoid}
+  table.brk{break-inside:auto} table.brk tr{break-inside:avoid}
+  a{color:inherit;text-decoration:none}
+}
+/* ===== 改善で加えた部品 ===== */
+.tag.u{border:1px dashed var(--muted);color:var(--muted);background:#fff}
+.conf{display:inline-block;font-family:var(--mono);font-size:10.5px;line-height:1;padding:3px 6px;border-radius:3px;margin-left:6px;vertical-align:2px;white-space:nowrap;border:1px solid var(--axis);color:var(--muted);background:#fff}
+.conf.hi{border-color:var(--blue);color:var(--blue-d)}
+.conf.md{border-color:var(--axis);color:var(--muted)}
+.conf.lo{border-color:var(--neg);color:var(--neg)}
+.tile .conf{margin:6px 0 0}
+.card.chg{border-left:3px solid var(--axis);background:#FBFBFD}
+.card.chg h4{color:var(--muted)}
+.card.dark ol,.card.dark ul{margin:6px 0 0}
+sup.cite{font-size:10px;margin-left:2px}
+sup.cite a{text-decoration:none;font-family:var(--mono)}
+ol.srcl li{scroll-margin-top:20px}
+ol.srcl li:target{background:var(--blue-l)}
+</style>
+</head>
+<body>
+<!--
+  戦略ブリーフ テンプレート
+  使い方：{{ }} を差し替え、要らない節は消す。節を足したら目次（nav）と番号を振り直す。
+  ルールは .claude/skills/strategy-brief/SKILL.md を参照。
+-->
+<div class="wrap">
+<nav class="toc" aria-label="目次">
+  <div class="brand">{{BRAND（例：PROJECT ／ STRATEGY BRIEF）}}</div>
+  <a href="#top">はじめに・結論の要約</a>
+  <a class="ch" href="#ch1"><span>01</span>現状整理</a>
+  <a href="#s11">{{1-1 見出し}}</a>
+  <a href="#s12">ここまでの経緯</a>
+  <a href="#s1z">決まったこと・決まっていないこと</a>
+  <a class="ch" href="#ch2"><span>02</span>Claudeの評価</a>
+  <a href="#s21">評価の材料と限界</a>
+  <a href="#s22">結論</a>
+  <a href="#s23">{{2-3 論点}}</a>
+  <a href="#s2z">評価の一覧</a>
+  <a class="ch" href="#ch3"><span>03</span>あるべき仮説</a>
+  <a href="#s31">仮説を一文で</a>
+  <a href="#s32">仮説と確かめ方</a>
+  <a href="#s33">{{3-3 成立条件}}</a>
+  <a href="#s3z">次の一手</a>
+  <a class="ch" href="#ch4"><span>04</span>{{第4章：相談したいこと／確かめたいこと／決めていただきたいこと}}</a>
+  <a href="#s41">論点ごとの背景と仮の答え</a>
+  <a href="#s42">{{問い返されそうなこと／アジェンダ案}}</a>
+  <a class="ch" href="#apx"><span>A</span>出典と用語</a>
+</nav>
+<main>
+
+<header class="cover" id="top">
+  <div class="code"><b>●</b> STRATEGY BRIEF — {{YYYY.MM.DD}} v{{版}}</div>
+  <h1>{{タイトル（20字前後）}}</h1>
+  <p class="sub">{{誰に向けて、何を確かめる資料か。一文で}}</p>
+  <div class="meta"><span>作成：{{日付}}（{{更新日}}更新）</span><span>{{作成者}}（整理と評価：Claude）</span><span>元資料：{{主な元資料}}</span><span>{{社外秘／チーム内}}</span></div>
+</header>
+
+<section>
+  <p class="lead">{{リード文：何の事業で、いま何の段階で、この資料は何のためにあるか。3〜4文}}</p>
+  <div class="legendbar">
+    <span><span class="tag f">事実</span>資料・公開情報で確認できたこと</span>
+    <span><span class="tag h">チームの仮説</span>計画や会話にあるが、まだ確かめていないこと</span>
+    <span><span class="tag v">Claudeの見立て</span>AIが資料から読み取った評価と提案</span>
+    <span><span class="tag u">未確認</span>これから確かめること・読めなかった資料に基づくこと</span>
+  </div>
+
+  <!-- ★改善：この資料で決めたいこと -->
+  <div class="card dark">
+    <div class="code"><b>●</b> DECISIONS NEEDED</div>
+    <h4>この資料で決めたいこと</h4>
+    <ol><li>{{決めたいこと1}}</li><li>{{決めたいこと2}}</li></ol>
+  </div>
+
+  <!-- ★改善：前回からの変更（v2以降のみ） -->
+  <div class="card chg">
+    <h4>前回（v{{前版}}）からの変更</h4>
+    <ul><li>{{追加・修正した事実}} → {{影響した結論・仮説（例：結論03、H7を追加）}}</li></ul>
+  </div>
+
+  <div class="concl">
+    <div class="c"><div class="n">01</div><p><b>{{結論の一文}}</b>{{根拠を3〜4文。数字を入れる}}</p></div>
+    <div class="c"><div class="n">02</div><p><b>{{結論の一文}}</b>{{根拠}}</p></div>
+    <div class="c"><div class="n">03</div><p><b>{{勝ち筋・打ち手の一文}}</b>{{根拠}}</p></div>
+    <div class="c"><div class="n">04</div><p><b>{{読み手にお願いしたいこと}}</b>{{第4章への誘導}}</p></div>
+  </div>
+</section>
+
+<!-- ============ 第1章 ============ -->
+<section class="ch" id="ch1">
+  <div class="chhead"><div><div class="code"><b>●</b> 01 — CURRENT STATE</div><h2>現状整理</h2></div></div>
+  <p class="lead">{{何を、どの資料のまま並べるか。評価は第2章に分けたことを書く}}</p>
+
+  <h3 id="s11"><span class="no">1-1</span>{{事業とプロダクト}}</h3>
+  <p><span class="tag f">事実</span>{{事実の段落}}<sup class="cite"><a href="#S1">S1</a></sup></p>
+  <div class="tiles">
+    <div class="tile"><div class="l">{{指標}}</div><div class="v">{{数字}}<small>{{単位}}</small></div><div class="d">{{補足}}</div></div>
+    <div class="tile"><div class="l">{{指標}}</div><div class="v">{{数字}}<small>{{単位}}</small></div></div>
+    <div class="tile"><div class="l">{{指標}}</div><div class="v">{{数字}}<small>{{単位}}</small></div></div>
+    <div class="tile"><div class="l">{{指標}}</div><div class="v">{{数字}}<small>{{単位}}</small></div><span class="conf lo">確度 低</span></div>
+    <div class="tile"><div class="l">{{指標}}</div><div class="v">{{数字}}<small>{{単位}}</small></div></div>
+  </div>
+  <div class="tblwrap"><table>
+    <thead><tr><th>項目</th><th>いま</th></tr></thead>
+    <tbody>
+      <tr><th>{{項目}}</th><td>{{中身}}</td></tr>
+      <tr><th>{{項目}}</th><td>{{中身}}</td></tr>
+    </tbody>
+  </table></div>
+  <p><span class="tag h">チームの仮説</span>{{計画に置いているが確かめていないこと}}</p>
+  <p><span class="tag u">未確認</span>{{読めなかった資料・現地で確かめる予定のこと}}</p>
+  <p class="src">出典：{{資料名、日付}}。{{計算方法・換算レート・時点}}</p>
+
+  <h3 id="s12"><span class="no">1-2</span>ここまでの経緯</h3>
+  <div class="tblwrap"><table class="tight">
+    <thead><tr><th>時期</th><th>出来事</th></tr></thead>
+    <tbody>
+      <tr><th>{{YYYY年M月}}</th><td>{{出来事。誰が何を決めたか}}</td></tr>
+      <tr><th>{{YYYY年M月}}</th><td>{{出来事}}</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3 id="s1z"><span class="no">1-3</span>決まったこと・決まっていないこと</h3>
+  <div class="two">
+    <div class="card key"><h4>決まったこと</h4><ul><li>{{}}</li></ul></div>
+    <div class="card"><h4>決まっていないこと</h4><ul><li>{{}}</li></ul></div>
+  </div>
+</section>
+
+<!-- ============ 第2章 ============ -->
+<section class="ch" id="ch2">
+  <div class="chhead"><div><div class="code"><b>●</b> 02 — ASSESSMENT</div><h2>Claudeの評価</h2></div></div>
+  <p class="lead">{{第1章の事実をもとに、何を評価するか}}</p>
+
+  <h3 id="s21"><span class="no">2-1</span>評価の材料と限界</h3>
+  <ul>
+    <li>{{使った材料}}</li>
+    <li>{{読めていない資料と、それで評価が変わり得る点}}</li>
+    <li>{{推計・置き値に頼っている点}}</li>
+  </ul>
+
+  <h3 id="s22"><span class="no">2-2</span>結論</h3>
+  <div class="card dark">
+    <div class="code"><b>●</b> CONCLUSION</div>
+    <h4>{{結論の一文（見出しそのものが結論）}}</h4>
+    <p>{{理由を3〜5文}}</p>
+  </div>
+
+  <h3 id="s23"><span class="no">2-3</span>{{論点（問いか主張の形）}}</h3>
+  <p><span class="tag v">Claudeの見立て</span>{{評価}}</p>
+  <div class="bars">
+    <div class="ttl">{{比べるものと単位}}</div>
+    <div class="bar"><div class="lab">{{項目}}<small>{{前提}}</small></div><div class="trk"><i style="width:100%"></i></div><div class="val">{{値}}</div></div>
+    <div class="bar em"><div class="lab">{{強調する項目}}</div><div class="trk"><i style="width:40%"></i></div><div class="val">{{値}}</div></div>
+    <div class="bar sub"><div class="lab">{{参考}}</div><div class="trk"><i style="width:15%"></i></div><div class="val">{{値}}</div></div>
+  </div>
+  <div class="tblwrap"><table class="tight">
+    <thead><tr><th>年度</th><th class="num">{{1年目}}</th><th class="num">{{2年目}}</th><th class="num">{{3年目}}</th></tr></thead>
+    <tbody><tr><th>営業利益</th><td class="h n2">{{-120}}</td><td class="h z">{{0}}</td><td class="h p1">{{+30}}</td></tr></tbody>
+  </table></div>
+  <div class="keyrow"><span><i style="background:var(--neg-m)"></i>赤字大</span><span><i style="background:var(--neg-l)"></i>赤字</span><span><i style="background:var(--neutral)"></i>±0</span><span><i style="background:var(--pos-l)"></i>黒字</span><span><i style="background:var(--pos-m)"></i>黒字大</span></div>
+
+  <h3 id="s2z"><span class="no">2-4</span>評価の一覧</h3>
+  <div class="tblwrap"><table class="tight brk">
+    <thead><tr><th>{{案・論点}}</th><th>{{評価軸1}}</th><th>{{評価軸2}}</th><th>判定</th></tr></thead>
+    <tbody>
+      <tr><th class="wrapok">{{案A}}</th><td><span class="mk ok"><i>○</i>{{一言}}</span></td><td><span class="mk mid"><i>△</i>{{一言}}</span></td><td>{{判定}}</td></tr>
+      <tr class="hl"><th class="wrapok">{{案B（推し）}}</th><td><span class="mk ok"><i>◎</i>{{一言}}</span></td><td><span class="mk ng"><i>×</i>{{一言}}</span></td><td>{{判定}}</td></tr>
+    </tbody>
+  </table></div>
+  <div class="keyrow"><span>◎○ 有利</span><span>△ 条件次第</span><span>× 不利</span><span>? 未検証</span></div>
+</section>
+
+<!-- ============ 第3章 ============ -->
+<section class="ch" id="ch3">
+  <div class="chhead"><div><div class="code"><b>●</b> 03 — HYPOTHESES</div><h2>あるべき仮説</h2></div></div>
+  <p class="lead">{{第2章を踏まえ、何を仮説として置くか}}</p>
+
+  <h3 id="s31"><span class="no">3-1</span>仮説を一文で</h3>
+  <div class="card key"><p style="font-size:16px;font-weight:700;color:var(--navy);margin:0">{{仮説の一文}}</p></div>
+
+  <h3 id="s32"><span class="no">3-2</span>{{N}}つの仮説と確かめ方</h3>
+  <div class="tblwrap"><table class="tight brk">
+    <thead><tr><th>#</th><th style="width:28%">仮説</th><th>確かめ方</th><th style="width:22%">外れたら</th><th style="width:14%">担当・期限</th></tr></thead>
+    <tbody>
+      <tr><th>H1</th><td>{{仮説}}</td><td>{{測るもの・聞くこと}}</td><td>{{次の手}}</td><td>{{担当}}・{{期限}}</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3 id="s33"><span class="no">3-3</span>{{数字で見た成立条件／道の選び方}}</h3>
+  <div class="fig">
+    <div class="ttl">{{図のタイトル}}</div>
+    <svg viewBox="0 0 600 220" role="img" aria-label="{{図の結論を一文で}}">
+      <line x1="60" y1="190" x2="580" y2="190" stroke="#C9CACE"/><line x1="60" y1="20" x2="60" y2="190" stroke="#C9CACE"/>
+      <text x="320" y="214" font-size="12" fill="#555C66" text-anchor="middle">{{横軸}}</text>
+      <text x="16" y="110" font-size="12" fill="#555C66" transform="rotate(-90 16 110)" text-anchor="middle">{{縦軸}}</text>
+      <circle cx="170" cy="140" r="9" fill="#C9CACE"/><text x="185" y="144" font-size="13" fill="#232B38">{{今の計画}}</text>
+      <circle cx="440" cy="60" r="9" fill="#1470FF"/><text x="455" y="64" font-size="13" fill="#10203A" font-weight="700">{{目指す位置}}</text>
+    </svg>
+  </div>
+
+  <h3 id="s3z"><span class="no">3-4</span>次の一手</h3>
+  <ol><li>{{行動。誰が、いつまでに}}</li></ol>
+</section>
+
+<!-- ============ 第4章 ============ -->
+<section class="ch" id="ch4">
+  <div class="chhead"><div><div class="code"><b>●</b> 04 — QUESTIONS</div><h2>{{第4章の名前}}</h2></div></div>
+  <p class="lead">{{何を伺いたいか。仮の答えはたたき台であること}}</p>
+
+  <h3 id="s41"><span class="no">4-1</span>論点ごとの背景と仮の答え</h3>
+  <div class="q" id="q1"><div class="qh"><span class="n">Q1</span><span class="t">{{論点の見出し}}</span><span class="pri">最優先</span></div><div class="qb"><dl>
+    <dt>伺いたいこと</dt><dd class="ask">{{問い。はい／いいえで終わらない形}}</dd>
+    <dt>背景</dt><dd><ul><li>{{事実。節番号で参照（1-2）}}</li></ul></dd>
+    <dt>Claudeの仮の答え</dt><dd>{{たたき台}}</dd>
+    <dt>答えで変わること</dt><dd>{{資料、計画、営業先など}}</dd>
+  </dl></div></div>
+  <div class="q" id="q2"><div class="qh"><span class="n">Q2</span><span class="t">{{論点の見出し}}</span><span class="pri b">次に</span></div><div class="qb"><dl>
+    <dt>伺いたいこと</dt><dd class="ask">{{}}</dd>
+    <dt>背景</dt><dd>{{}}</dd>
+    <dt>Claudeの仮の答え</dt><dd>{{}}</dd>
+    <dt>答えで変わること</dt><dd>{{}}</dd>
+  </dl></div></div>
+
+  <h3 id="s42"><span class="no">4-2</span>{{問い返されそうなこと／アジェンダ案}}</h3>
+  <ul><li><b>{{問い}}</b> {{短い答えと参照先}}</li></ul>
+</section>
+
+<!-- ============ 付録 ============ -->
+<section class="ch" id="apx">
+  <div class="chhead"><div><div class="code"><b>●</b> A — APPENDIX</div><h2>出典と用語</h2></div></div>
+  <h3 id="a1"><span class="no">A-1</span>出典</h3>
+  <ol class="small srcl">
+    <li id="S1">{{資料名・発行元・日付・URL}}<span class="conf hi">確度 高</span></li>
+    <li id="S2">{{}}<span class="conf md">確度 中</span></li>
+  </ol>
+  <h3 id="a2"><span class="no">A-2</span>用語</h3>
+  <div class="tblwrap"><table class="tight"><tbody>
+    <tr><th>{{用語}}</th><td>{{一文の説明}}</td></tr>
+  </tbody></table></div>
+</section>
+
+<footer><span>{{BRAND}}</span><span>{{CONFIDENTIAL}}　{{YYYY.MM.DD}}　v{{版}}</span></footer>
+</main>
+</div>
+</body>
+</html>
