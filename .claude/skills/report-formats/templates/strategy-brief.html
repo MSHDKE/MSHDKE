@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{タイトル}}（戦略ブリーフ）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+
+:root{
+  --navy:#10203A; --navy-bg:#0E1B2E; --blue:#1470FF; --blue-d:#0B55CC; --blue-l:#EAF2FF; --blue-on-dark:#70B3FF;
+  --txt:#232B38; --muted:#555C66; --axis:#C9CACE; --line:#E3E6EB; --bg:#F5F6FA; --card:#FFFFFF;
+  --neg:#B5432F; --neg-l:#FBEDE9; --neg-m:#F3CFC6; --pos-l:#E3EEFF; --pos-m:#BBD5FF; --neutral:#EEF0F3;
+  --mono:Consolas,"SFMono-Regular",Menlo,monospace;
+  --sans:"Noto Sans JP","Yu Gothic UI","Hiragino Kaku Gothic ProN","Meiryo",sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:var(--sans);font-size:15px;line-height:1.85;-webkit-font-smoothing:antialiased}
+a{color:var(--blue-d)}
+.wrap{display:grid;grid-template-columns:250px minmax(0,1fr);max-width:1240px;margin:0 auto}
+nav.toc{position:sticky;top:0;align-self:start;height:100vh;overflow:auto;padding:28px 18px 28px 24px;border-right:1px solid var(--line);font-size:12.5px;line-height:1.6}
+nav.toc .brand{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--muted);margin-bottom:14px}
+nav.toc a{display:block;color:var(--muted);text-decoration:none;padding:3px 0 3px 10px;border-left:2px solid transparent}
+nav.toc a:hover{color:var(--navy);border-left-color:var(--blue)}
+nav.toc a.ch{color:var(--navy);font-weight:700;margin-top:14px;padding-left:0;border-left:none}
+nav.toc a.ch span{font-family:var(--mono);font-weight:400;color:var(--blue);margin-right:8px}
+main{padding:0 44px 80px;min-width:0}
+header.cover{padding:44px 0 30px;border-bottom:1px solid var(--line)}
+header.cover img{width:300px;max-width:70%;height:auto;display:block;margin-bottom:26px}
+.code{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;color:var(--muted)}
+.code b{color:var(--blue);font-weight:400}
+h1{font-size:30px;line-height:1.4;margin:10px 0 10px;color:var(--navy);font-weight:700;letter-spacing:.01em}
+header.cover .sub{color:var(--muted);font-size:14px;margin:0}
+header.cover .meta{margin-top:18px;font-size:12.5px;color:var(--muted);display:flex;gap:22px;flex-wrap:wrap}
+section.ch{padding-top:54px}
+section.ch > .chhead{display:flex;align-items:baseline;justify-content:space-between;border-bottom:2px solid var(--navy);padding-bottom:8px;margin-bottom:8px}
+h2{font-size:23px;margin:6px 0 0;color:var(--navy);font-weight:700}
+h3{font-size:17px;margin:38px 0 10px;color:var(--navy);font-weight:700;display:flex;align-items:baseline;gap:10px}
+h3 .no{font-family:var(--mono);font-weight:400;color:var(--blue);font-size:13px;letter-spacing:.06em;flex:none}
+h4{font-size:14.5px;margin:22px 0 6px;color:var(--navy);font-weight:700}
+p{margin:8px 0}
+.lead{font-size:15.5px;color:var(--txt);margin:14px 0 6px}
+ul,ol{margin:8px 0;padding-left:1.4em}
+li{margin:3px 0}
+.small{font-size:12.5px;color:var(--muted);line-height:1.7}
+.src{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.65}
+.tag{display:inline-block;font-size:11px;line-height:1;padding:4px 7px;border-radius:3px;margin-right:6px;vertical-align:2px;white-space:nowrap;font-weight:500}
+.tag.f{border:1px solid var(--axis);color:var(--muted);background:#fff}
+.tag.h{border:1px solid var(--blue);color:var(--blue-d);background:#fff}
+.tag.v{background:var(--navy);color:#fff;border:1px solid var(--navy)}
+.legendbar{display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin:14px 0 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:18px 22px;margin:14px 0}
+.card.key{border-left:3px solid var(--blue)}
+.card.dark{background:var(--navy-bg);color:#E8EDF5;border-color:var(--navy-bg)}
+.card.dark h4{color:#fff;margin-top:0}
+.card.dark .code{color:#9FB0C8}
+.card.dark .code b{color:var(--blue-on-dark)}
+.card h4:first-child{margin-top:0}
+.concl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0}
+.concl .c{background:#fff;border:1px solid var(--line);border-radius:6px;padding:16px 18px}
+.concl .c .n{font-family:var(--mono);color:var(--blue);font-size:12px;letter-spacing:.1em}
+.concl .c p{margin:4px 0 0;font-size:14px;line-height:1.75}
+.concl .c b{color:var(--navy)}
+.tiles{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:14px 0}
+.tile{background:#fff;border:1px solid var(--line);border-radius:6px;padding:12px 14px}
+.tile .l{font-size:11.5px;color:var(--muted);line-height:1.5}
+.tile .v{font-size:23px;font-weight:700;color:var(--navy);line-height:1.3;margin-top:4px;font-feature-settings:"tnum"}
+.tile .v small{font-size:12px;font-weight:500;color:var(--muted);margin-left:2px}
+.tile .d{font-size:11.5px;color:var(--muted);line-height:1.5;margin-top:2px}
+.tblwrap{overflow-x:auto;margin:12px 0}
+table{border-collapse:collapse;width:100%;font-size:13.5px;line-height:1.7;background:#fff}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+thead th{font-size:12px;color:var(--muted);font-weight:500;border-bottom:1.5px solid var(--navy);background:#fff;white-space:nowrap}
+tbody th{font-weight:700;color:var(--navy);white-space:nowrap}
+tbody th.wrapok{white-space:normal}
+td.num,th.num{text-align:right;font-feature-settings:"tnum";white-space:nowrap}
+table.tight th,table.tight td{padding:7px 10px}
+tr.hl td,tr.hl th{background:var(--blue-l)}
+td.c{text-align:center;white-space:nowrap}
+.mk{display:inline-flex;align-items:center;gap:6px;font-weight:700;white-space:nowrap}
+.mk i{font-style:normal;display:inline-block;width:22px;height:22px;line-height:22px;text-align:center;border-radius:50%;font-size:13px}
+.mk.ok i{background:var(--pos-m);color:var(--navy)}
+.mk.mid i{background:var(--neutral);color:var(--navy);border:1px solid var(--axis)}
+.mk.ng i{background:var(--neg-m);color:#5A1E12}
+.mk.q i{background:#fff;color:var(--muted);border:1px dashed var(--muted)}
+/* 収支の表（赤字・黒字の濃淡。数字そのものを必ず表示する） */
+td.h{ text-align:right;font-feature-settings:"tnum";white-space:nowrap;border-left:2px solid #fff}
+td.h.n2{background:var(--neg-m)} td.h.n1{background:var(--neg-l)} td.h.z{background:var(--neutral)} td.h.p1{background:var(--pos-l)} td.h.p2{background:var(--pos-m)}
+.keyrow{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:6px;align-items:center}
+.keyrow span i{display:inline-block;width:14px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+/* 横棒 */
+.bars{background:#fff;border:1px solid var(--line);border-radius:6px;padding:14px 18px;margin:12px 0}
+.bars .ttl{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:8px}
+.bar{display:grid;grid-template-columns:minmax(150px,34%) 1fr 96px;gap:10px;align-items:center;padding:4px 0;font-size:13px}
+.bar .lab{color:var(--txt);line-height:1.45}
+.bar .lab small{display:block;color:var(--muted);font-size:11.5px}
+.bar .trk{height:14px;position:relative}
+.bar .trk i{display:block;height:14px;border-radius:0 4px 4px 0;background:var(--axis);min-width:2px}
+.bar.em .trk i{background:var(--blue)}
+.bar .val{text-align:right;font-feature-settings:"tnum";font-weight:700;color:var(--navy);white-space:nowrap}
+.bar.sub .val{font-weight:500;color:var(--txt)}
+.fig{background:#fff;border:1px solid var(--line);border-radius:6px;padding:16px 18px;margin:12px 0}
+.fig .ttl{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.fig svg{width:100%;height:auto;display:block}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.q{background:#fff;border:1px solid var(--line);border-radius:6px;margin:14px 0;overflow:hidden}
+.q .qh{display:flex;gap:14px;align-items:baseline;padding:14px 20px 10px;border-bottom:1px solid var(--line)}
+.q .qh .n{font-family:var(--mono);color:var(--blue);font-size:13px;letter-spacing:.08em;flex:none}
+.q .qh .t{font-weight:700;color:var(--navy);font-size:16px;line-height:1.55}
+.q .qb{padding:6px 20px 14px}
+.q dl{display:grid;grid-template-columns:118px minmax(0,1fr);gap:0;margin:0}
+.q dt{font-size:12px;color:var(--muted);padding:9px 0;border-bottom:1px solid var(--line);line-height:1.7}
+.q dd{margin:0;padding:8px 0 8px 12px;border-bottom:1px solid var(--line);font-size:13.5px;line-height:1.75}
+.q dl > dt:last-of-type,.q dl > dd:last-of-type{border-bottom:none}
+.q dd.ask{font-weight:500;color:var(--navy)}
+.q dd ul{margin:0;padding-left:1.2em}
+.pri{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:#fff;background:var(--blue);padding:3px 7px;border-radius:3px;margin-left:auto;flex:none;white-space:nowrap}
+.pri.b{background:#fff;color:var(--muted);border:1px solid var(--axis)}
+footer{margin-top:60px;padding-top:16px;border-top:1px solid var(--line);font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+@media (max-width:960px){
+  .wrap{display:block}
+  nav.toc{position:static;height:auto;border-right:none;border-bottom:1px solid var(--line);padding:16px}
+  main{padding:0 16px 60px}
+  .tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .concl,.two{grid-template-columns:1fr}
+  .q dl{grid-template-columns:1fr}
+  .q dt{border-bottom:none;padding-bottom:0}
+  .q dd{padding-left:0}
+  h1{font-size:24px}
+}
+@media print{
+  body{background:#fff;font-size:11pt}
+  nav.toc{display:none}
+  .wrap{display:block;max-width:none}
+  main{padding:0}
+  section.ch{break-before:page;padding-top:0}
+  .card,.q,.fig,.bars,table,.tile,.concl .c{break-inside:avoid}
+  table.brk{break-inside:auto} table.brk tr{break-inside:avoid}
+  a{color:inherit;text-decoration:none}
+}
+/* ===== 改善で加えた部品 ===== */
+.tag.u{border:1px dashed var(--muted);color:var(--muted);background:#fff}
+.conf{display:inline-block;font-family:var(--mono);font-size:10.5px;line-height:1;padding:3px 6px;border-radius:3px;margin-left:6px;vertical-align:2px;white-space:nowrap;border:1px solid var(--axis);color:var(--muted);background:#fff}
+.conf.hi{border-color:var(--blue);color:var(--blue-d)}
+.conf.md{border-color:var(--axis);color:var(--muted)}
+.conf.lo{border-color:var(--neg);color:var(--neg)}
+.tile .conf{margin:6px 0 0}
+.card.chg{border-left:3px solid var(--axis);background:#FBFBFD}
+.card.chg h4{color:var(--muted)}
+.card.dark ol,.card.dark ul{margin:6px 0 0}
+sup.cite{font-size:10px;margin-left:2px}
+sup.cite a{text-decoration:none;font-family:var(--mono)}
+ol.srcl li{scroll-margin-top:20px}
+ol.srcl li:target{background:var(--blue-l)}
+/* ===== 1ページ要約（印刷・転送用） ===== */
+details.opwrap{margin:18px 0 0}
+details.opwrap>summary{cursor:pointer;font-size:13px;color:var(--blue-d);font-weight:700;padding:8px 0;list-style:none}
+details.opwrap>summary::before{content:"▸ ";color:var(--blue)}
+details.opwrap[open]>summary::before{content:"▾ "}
+.onepager{background:#fff;border:1px solid var(--line);border-radius:6px;padding:20px 24px;margin:6px 0 0}
+.op-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 14px}
+.op-actions button{font:inherit;font-size:12.5px;padding:5px 12px;border:1px solid var(--blue);background:#fff;color:var(--blue-d);border-radius:4px;cursor:pointer}
+.op-actions button:hover{background:var(--blue-l)}
+.op-head{display:flex;justify-content:space-between;align-items:baseline;gap:6px 14px;flex-wrap:wrap;border-bottom:2px solid var(--navy);padding-bottom:6px;margin-bottom:6px}
+.op-title{font-weight:700;color:var(--navy);font-size:16px;line-height:1.5}
+.op-meta{font-size:11.5px;color:var(--muted)}
+.onepager h5{font-size:11.5px;color:var(--blue-d);margin:12px 0 2px;letter-spacing:.08em;font-weight:700}
+.onepager ol,.onepager ul{margin:2px 0;padding-left:1.4em;font-size:13.5px;line-height:1.7}
+.onepager p{font-size:13.5px;line-height:1.7;margin:2px 0}
+.op-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 22px}
+.op-kpi{display:flex;gap:6px 16px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.op-kpi b{font-size:15px;color:var(--navy);margin-right:3px;font-feature-settings:"tnum"}
+.op-foot{font-size:11px;color:var(--muted);margin-top:12px;border-top:1px solid var(--line);padding-top:6px;line-height:1.6}
+@media (max-width:960px){.op-grid{grid-template-columns:1fr}}
+@media print{
+  @page{size:A4;margin:12mm}
+  details.opwrap>summary,.op-actions{display:none}
+  .onepager{border:none;padding:0;margin:0;break-after:page}
+  .onepager ol,.onepager ul,.onepager p{font-size:9.5pt;line-height:1.55}
+  .op-title{font-size:13pt}
+  body.print-summary main > *:not(details.opwrap){display:none !important}
+  body.print-summary .onepager{break-after:auto}
+}
+/* ===== 追加部品：コールアウト ===== */
+.callout{border:1px solid var(--line);border-left:3px solid var(--neg);background:#fff;border-radius:6px;padding:12px 18px;margin:12px 0;font-size:14px}
+.callout b:first-child{color:var(--neg);margin-right:6px}
+.callout.info{border-left-color:var(--blue)}
+.callout.info b:first-child{color:var(--blue-d)}
+
+/* ===== 追加部品：試算スライダー（.calc） ===== */
+.calc{background:#fff;border:1px solid var(--line);border-radius:6px;padding:16px 20px;margin:12px 0}
+.calc .ttl{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:8px}
+.calc .ctl{display:grid;grid-template-columns:minmax(150px,34%) 1fr 120px;gap:10px;align-items:center;font-size:13px;padding:4px 0}
+.calc .ctl label small{display:block;color:var(--muted);font-size:11.5px}
+.calc input[type=range]{width:100%;accent-color:var(--blue)}
+.calc .ctl .val{text-align:right;font-weight:700;color:var(--navy);font-feature-settings:"tnum";white-space:nowrap}
+.calc .res{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+.calc .res .tile{background:var(--bg)}
+.calc .res .tile.ok .v{color:var(--blue-d)}
+.calc .res .tile.ng{border-color:var(--neg-m);background:var(--neg-l)}
+.calc .res .tile.ng .v{color:var(--neg)}
+.calc .reset{font:inherit;font-size:12px;margin-top:10px;padding:4px 10px;border:1px solid var(--axis);background:#fff;color:var(--muted);border-radius:4px;cursor:pointer}
+@media (max-width:960px){
+  .calc .ctl{grid-template-columns:1fr 100px}
+  .calc .ctl label{grid-column:1/-1}
+  .calc .res{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+/* ===== 追加部品：表示切替（スライド表示） ===== */
+.viewbar{position:fixed;right:16px;bottom:16px;z-index:20;display:flex;gap:6px}
+.viewbar button,.slidebar button{font:inherit;font-size:12.5px;padding:6px 12px;border:1px solid var(--blue);background:#fff;color:var(--blue-d);border-radius:4px;cursor:pointer;box-shadow:0 1px 3px rgba(16,32,58,.12)}
+.viewbar button:hover,.slidebar button:hover{background:var(--blue-l)}
+.slidebar{display:none}
+body.slide-mode{background:#fff}
+body.slide-mode nav.toc,body.slide-mode details.opwrap,body.slide-mode footer,body.slide-mode .viewbar{display:none !important}
+body.slide-mode .wrap{display:block;max-width:1120px}
+body.slide-mode main{padding:36px 56px 96px;font-size:17px}
+body.slide-mode .unit{display:none}
+body.slide-mode .unit.cur{display:block;min-height:calc(100vh - 150px)}
+body.slide-mode section.ch{padding-top:0}
+body.slide-mode section.ch.off{display:none}
+body.slide-mode h1{font-size:38px}
+body.slide-mode h2{font-size:30px}
+body.slide-mode h3{font-size:25px;margin-top:6px}
+body.slide-mode p,body.slide-mode li{font-size:17px}
+body.slide-mode p.src,body.slide-mode .small,body.slide-mode .small li{font-size:13px}
+body.slide-mode .slidebar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:30;justify-content:center;align-items:center;gap:12px;padding:10px;background:rgba(255,255,255,.96);border-top:1px solid var(--line);font-family:var(--mono);font-size:12px;color:var(--muted)}
+@media (max-width:960px){ body.slide-mode main{padding:20px 16px 90px} body.slide-mode h1{font-size:26px} }
+@media print{ .viewbar,.slidebar{display:none !important} }
+
+/* ===== PR/FAQ ===== */
+.pr{background:#fff;border:1px solid var(--line);border-radius:6px;padding:28px 34px;margin:16px 0}
+.pr .dateline{font-size:12.5px;color:var(--muted);font-family:var(--mono);letter-spacing:.06em}
+.pr .hl1{font-size:24px;font-weight:700;color:var(--navy);line-height:1.45;margin:8px 0 4px}
+.pr .hl2{font-size:15.5px;color:var(--muted);margin:0 0 14px}
+.pr blockquote{margin:14px 0;padding:8px 18px;border-left:3px solid var(--blue);background:var(--blue-l);font-size:14.5px}
+.pr blockquote cite{display:block;font-style:normal;font-size:12px;color:var(--muted);margin-top:4px}
+.faq{background:#fff;border:1px solid var(--line);border-radius:6px;margin:10px 0;overflow:hidden}
+.faq summary{cursor:pointer;padding:12px 18px;font-weight:700;color:var(--navy);display:flex;gap:12px;align-items:baseline;list-style:none}
+.faq summary .n{font-family:var(--mono);color:var(--blue);font-size:12.5px;flex:none;font-weight:400}
+.faq .a{padding:4px 18px 14px 18px;border-top:1px solid var(--line);font-size:14px}
+@media (max-width:960px){ .pr{padding:20px 18px} .pr .hl1{font-size:20px} }
+@media print{ .faq{break-inside:avoid} .pr{break-inside:auto} }
+
+/* ===== ADR（決定記録） ===== */
+.adr{background:#fff;border:1px solid var(--line);border-radius:6px;margin:14px 0;overflow:hidden}
+.adr .ah{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;padding:14px 20px 10px;border-bottom:1px solid var(--line)}
+.adr .ah .n{font-family:var(--mono);color:var(--blue);font-size:13px;letter-spacing:.06em}
+.adr .ah .t{font-weight:700;color:var(--navy);font-size:16px;flex:1 1 300px}
+.adr .ah .d{font-size:12px;color:var(--muted);font-family:var(--mono)}
+.st{display:inline-block;font-size:11px;line-height:1;padding:4px 8px;border-radius:3px;white-space:nowrap;font-weight:500}
+.st.acc{background:var(--navy);color:#fff}
+.st.pro{border:1px solid var(--blue);color:var(--blue-d);background:#fff}
+.st.sup{border:1px solid var(--axis);color:var(--muted);background:var(--neutral);text-decoration:line-through}
+.st.rej{border:1px solid var(--neg);color:var(--neg);background:#fff}
+.adr dl{display:grid;grid-template-columns:118px minmax(0,1fr);margin:0;padding:6px 20px 12px}
+.adr dt{font-size:12px;color:var(--muted);padding:8px 0;border-bottom:1px solid var(--line)}
+.adr dd{margin:0;padding:7px 0 7px 12px;border-bottom:1px solid var(--line);font-size:14px;line-height:1.75}
+.adr dd.dec{font-weight:700;color:var(--navy)}
+.adr dl>dt:last-of-type,.adr dl>dd:last-of-type{border-bottom:none}
+@media (max-width:960px){ .adr dl{grid-template-columns:1fr} .adr dt{border-bottom:none;padding-bottom:0} .adr dd{padding-left:0} }
+@media print{ .adr{break-inside:avoid} }
+</style>
+</head>
+<body>
+<!--
+  戦略ブリーフ テンプレート
+  使い方：{{ }} を差し替え、要らない節は消す。節を足したら目次（nav）と番号を振り直す。
+  ルールは .claude/skills/strategy-brief/SKILL.md を参照。
+-->
+<div class="wrap">
+<nav class="toc" aria-label="目次">
+  <div class="brand">{{BRAND（例：PROJECT ／ STRATEGY BRIEF）}}</div>
+  <a href="#top">はじめに・結論の要約</a>
+  <a href="#summary">1ページ要約（印刷・転送用）</a>
+  <a class="ch" href="#ch1"><span>01</span>現状整理</a>
+  <a href="#s11">{{1-1 見出し}}</a>
+  <a href="#s12">ここまでの経緯</a>
+  <a href="#s1z">決まったこと・決まっていないこと</a>
+  <a class="ch" href="#ch2"><span>02</span>Claudeの評価</a>
+  <a href="#s21">評価の材料と限界</a>
+  <a href="#s22">結論</a>
+  <a href="#s23">{{2-3 論点}}</a>
+  <a href="#s2z">評価の一覧</a>
+  <a class="ch" href="#ch3"><span>03</span>あるべき仮説</a>
+  <a href="#s31">仮説を一文で</a>
+  <a href="#s32">仮説と確かめ方</a>
+  <a href="#s33">{{3-3 成立条件}}</a>
+  <a href="#s3z">次の一手</a>
+  <a class="ch" href="#ch4"><span>04</span>{{第4章：相談したいこと／確かめたいこと／決めていただきたいこと}}</a>
+  <a href="#s41">論点ごとの背景と仮の答え</a>
+  <a href="#s42">{{問い返されそうなこと／アジェンダ案}}</a>
+  <a class="ch" href="#apx"><span>A</span>出典と用語</a>
+</nav>
+<main>
+
+<header class="cover" id="top">
+  <div class="code"><b>●</b> STRATEGY BRIEF — {{YYYY.MM.DD}} v{{版}}</div>
+  <h1>{{タイトル（20字前後）}}</h1>
+  <p class="sub">{{誰に向けて、何を確かめる資料か。一文で}}</p>
+  <div class="meta"><span>作成：{{日付}}（{{更新日}}更新）</span><span>{{作成者}}（整理と評価：Claude）</span><span>元資料：{{主な元資料}}</span><span>{{社外秘／チーム内}}</span></div>
+</header>
+
+<!-- ★1ページ要約（印刷・転送用）。data-auto の欄は、空なら本文から自動で埋まる。手で書いた欄はそのまま使われる -->
+<details class="opwrap" id="summary">
+  <summary>1ページ要約（印刷・転送用）</summary>
+  <div class="onepager" id="onepager">
+    <div class="op-actions"><button type="button" data-act="print-summary">要約だけ印刷</button><button type="button" data-act="copy">テキストでコピー</button><button type="button" data-act="print-all">全体を印刷</button><span class="op-msg small"></span></div>
+    <div class="op-body">
+      <div class="op-head"><div class="op-title">{{タイトル}}｜1ページ要約</div><div class="op-meta">{{YYYY.MM.DD}} v{{版}}・{{作成者}}・{{配布範囲}}</div></div>
+      <h5>この資料で決めたいこと</h5><ol data-auto="decisions"></ol>
+      <h5>結論</h5><ol data-auto="conclusions"></ol>
+      <div class="op-grid">
+        <div><h5>仮説</h5><p data-auto="hypothesis"></p></div>
+        <div><h5>主要な数字</h5><div class="op-kpi" data-auto="kpi"></div></div>
+      </div>
+      <h5>最優先の論点と仮の答え</h5><ul data-auto="questions"></ul>
+      <h5>次の一手</h5><ol data-auto="next"></ol>
+      <div class="op-foot">全体版：{{ファイル名またはNotionのリンク}}。事実・仮説・見立ての区別と出典は全体版を参照。</div>
+    </div>
+  </div>
+</details>
+
+<section>
+  <p class="lead">{{リード文：何の事業で、いま何の段階で、この資料は何のためにあるか。3〜4文}}</p>
+  <div class="legendbar">
+    <span><span class="tag f">事実</span>資料・公開情報で確認できたこと</span>
+    <span><span class="tag h">チームの仮説</span>計画や会話にあるが、まだ確かめていないこと</span>
+    <span><span class="tag v">Claudeの見立て</span>AIが資料から読み取った評価と提案</span>
+    <span><span class="tag u">未確認</span>これから確かめること・読めなかった資料に基づくこと</span>
+  </div>
+
+  <!-- ★改善：この資料で決めたいこと -->
+  <div class="card dark">
+    <div class="code"><b>●</b> DECISIONS NEEDED</div>
+    <h4>この資料で決めたいこと</h4>
+    <ol id="decisions"><li>{{決めたいこと1}}</li><li>{{決めたいこと2}}</li></ol>
+  </div>
+
+  <!-- ★改善：前回からの変更（v2以降のみ） -->
+  <div class="card chg">
+    <h4>前回（v{{前版}}）からの変更</h4>
+    <ul><li>{{追加・修正した事実}} → {{影響した結論・仮説（例：結論03、H7を追加）}}</li></ul>
+  </div>
+
+  <div class="concl">
+    <div class="c"><div class="n">01</div><p><b>{{結論の一文}}</b>{{根拠を3〜4文。数字を入れる}}</p></div>
+    <div class="c"><div class="n">02</div><p><b>{{結論の一文}}</b>{{根拠}}</p></div>
+    <div class="c"><div class="n">03</div><p><b>{{勝ち筋・打ち手の一文}}</b>{{根拠}}</p></div>
+    <div class="c"><div class="n">04</div><p><b>{{読み手にお願いしたいこと}}</b>{{第4章への誘導}}</p></div>
+  </div>
+</section>
+
+<!-- ============ 第1章 ============ -->
+<section class="ch" id="ch1">
+  <div class="chhead"><div><div class="code"><b>●</b> 01 — CURRENT STATE</div><h2>現状整理</h2></div></div>
+  <p class="lead">{{何を、どの資料のまま並べるか。評価は第2章に分けたことを書く}}</p>
+
+  <h3 id="s11"><span class="no">1-1</span>{{事業とプロダクト}}</h3>
+  <p><span class="tag f">事実</span>{{事実の段落}}<sup class="cite"><a href="#S1">S1</a></sup></p>
+  <div class="tiles">
+    <div class="tile"><div class="l">{{指標}}</div><div class="v">{{数字}}<small>{{単位}}</small></div><div class="d">{{補足}}</div></div>
+    <div class="tile"><div class="l">{{指標}}</div><div class="v">{{数字}}<small>{{単位}}</small></div></div>
+    <div class="tile"><div class="l">{{指標}}</div><div class="v">{{数字}}<small>{{単位}}</small></div></div>
+    <div class="tile"><div class="l">{{指標}}</div><div class="v">{{数字}}<small>{{単位}}</small></div><span class="conf lo">確度 低</span></div>
+    <div class="tile"><div class="l">{{指標}}</div><div class="v">{{数字}}<small>{{単位}}</small></div></div>
+  </div>
+  <div class="tblwrap"><table>
+    <thead><tr><th>項目</th><th>いま</th></tr></thead>
+    <tbody>
+      <tr><th>{{項目}}</th><td>{{中身}}</td></tr>
+      <tr><th>{{項目}}</th><td>{{中身}}</td></tr>
+    </tbody>
+  </table></div>
+  <p><span class="tag h">チームの仮説</span>{{計画に置いているが確かめていないこと}}</p>
+  <p><span class="tag u">未確認</span>{{読めなかった資料・現地で確かめる予定のこと}}</p>
+  <p class="src">出典：{{資料名、日付}}。{{計算方法・換算レート・時点}}</p>
+
+  <h3 id="s12"><span class="no">1-2</span>ここまでの経緯</h3>
+  <div class="tblwrap"><table class="tight">
+    <thead><tr><th>時期</th><th>出来事</th></tr></thead>
+    <tbody>
+      <tr><th>{{YYYY年M月}}</th><td>{{出来事。誰が何を決めたか}}</td></tr>
+      <tr><th>{{YYYY年M月}}</th><td>{{出来事}}</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3 id="s1z"><span class="no">1-3</span>決まったこと・決まっていないこと</h3>
+  <div class="two">
+    <div class="card key"><h4>決まったこと</h4><ul><li>{{}}</li></ul></div>
+    <div class="card"><h4>決まっていないこと</h4><ul><li>{{}}</li></ul></div>
+  </div>
+</section>
+
+<!-- ============ 第2章 ============ -->
+<section class="ch" id="ch2">
+  <div class="chhead"><div><div class="code"><b>●</b> 02 — ASSESSMENT</div><h2>Claudeの評価</h2></div></div>
+  <p class="lead">{{第1章の事実をもとに、何を評価するか}}</p>
+
+  <h3 id="s21"><span class="no">2-1</span>評価の材料と限界</h3>
+  <ul>
+    <li>{{使った材料}}</li>
+    <li>{{読めていない資料と、それで評価が変わり得る点}}</li>
+    <li>{{推計・置き値に頼っている点}}</li>
+  </ul>
+
+  <h3 id="s22"><span class="no">2-2</span>結論</h3>
+  <div class="card dark">
+    <div class="code"><b>●</b> CONCLUSION</div>
+    <h4>{{結論の一文（見出しそのものが結論）}}</h4>
+    <p>{{理由を3〜5文}}</p>
+  </div>
+
+  <h3 id="s23"><span class="no">2-3</span>{{論点（問いか主張の形）}}</h3>
+  <p><span class="tag v">Claudeの見立て</span>{{評価}}</p>
+  <div class="bars">
+    <div class="ttl">{{比べるものと単位}}</div>
+    <div class="bar"><div class="lab">{{項目}}<small>{{前提}}</small></div><div class="trk"><i style="width:100%"></i></div><div class="val">{{値}}</div></div>
+    <div class="bar em"><div class="lab">{{強調する項目}}</div><div class="trk"><i style="width:40%"></i></div><div class="val">{{値}}</div></div>
+    <div class="bar sub"><div class="lab">{{参考}}</div><div class="trk"><i style="width:15%"></i></div><div class="val">{{値}}</div></div>
+  </div>
+  <!-- 試算スライダー：前提が2つ以上不確かな計算に使う。式は data-expr、良し悪しは data-ok（x が結果） -->
+  <div class="calc">
+    <div class="ttl">{{試算の名前（例：買い付け費の回収試算）}}</div>
+    <div class="ctl"><label>{{前提1（例：年会費）}}<small>{{根拠・いまの値}}</small></label><input type="range" data-var="fee" min="1000" max="5000" step="100" value="2000" data-fmt="0" data-unit="円"><span class="val" data-show="fee"></span></div>
+    <div class="ctl"><label>{{前提2（例：増える有料会員）}}<small>{{根拠}}</small></label><input type="range" data-var="mem" min="1" max="30" step="1" value="6" data-fmt="0" data-unit="万人"><span class="val" data-show="mem"></span></div>
+    <div class="ctl"><label>{{前提3（例：買い付け額）}}<small>{{根拠}}</small></label><input type="range" data-var="bud" min="1" max="10" step="0.5" value="4" data-fmt="1" data-unit="億円"><span class="val" data-show="bud"></span></div>
+    <div class="res">
+      <div class="tile"><div class="l">{{結果1（例：年間の会費収入・億円）}}</div><div class="v" data-expr="fee*mem*1e4/1e8" data-fmt="1"></div></div>
+      <div class="tile"><div class="l">{{結果2（例：回収年数）}}</div><div class="v" data-expr="bud/(fee*mem*1e4/1e8)" data-fmt="1" data-ok="x<=3"></div><div class="d">{{判定の基準（例：3年以内なら青）}}</div></div>
+      <div class="tile"><div class="l">{{結果3（例：3年で回収に要る会員）}}</div><div class="v" data-expr="bud*1e8/3/fee/1e4" data-fmt="1"></div><div class="d">万人</div></div>
+    </div>
+    <button type="button" class="reset">前提を元に戻す</button>
+  </div>
+  <p class="src">試算の初期値は{{資料名}}の値。{{置き値の前提}}。</p>
+  <div class="callout"><b>注意</b>{{読み落とせない前提や制約（例：この試算は会費だけで回収する場合）}}</div>
+  <div class="tblwrap"><table class="tight">
+    <thead><tr><th>年度</th><th class="num">{{1年目}}</th><th class="num">{{2年目}}</th><th class="num">{{3年目}}</th></tr></thead>
+    <tbody><tr><th>営業利益</th><td class="h n2">{{-120}}</td><td class="h z">{{0}}</td><td class="h p1">{{+30}}</td></tr></tbody>
+  </table></div>
+  <div class="keyrow"><span><i style="background:var(--neg-m)"></i>赤字大</span><span><i style="background:var(--neg-l)"></i>赤字</span><span><i style="background:var(--neutral)"></i>±0</span><span><i style="background:var(--pos-l)"></i>黒字</span><span><i style="background:var(--pos-m)"></i>黒字大</span></div>
+
+  <h3 id="s2z"><span class="no">2-4</span>評価の一覧</h3>
+  <div class="tblwrap"><table class="tight brk">
+    <thead><tr><th>{{案・論点}}</th><th>{{評価軸1}}</th><th>{{評価軸2}}</th><th>判定</th></tr></thead>
+    <tbody>
+      <tr><th class="wrapok">{{案A}}</th><td><span class="mk ok"><i>○</i>{{一言}}</span></td><td><span class="mk mid"><i>△</i>{{一言}}</span></td><td>{{判定}}</td></tr>
+      <tr class="hl"><th class="wrapok">{{案B（推し）}}</th><td><span class="mk ok"><i>◎</i>{{一言}}</span></td><td><span class="mk ng"><i>×</i>{{一言}}</span></td><td>{{判定}}</td></tr>
+    </tbody>
+  </table></div>
+  <div class="keyrow"><span>◎○ 有利</span><span>△ 条件次第</span><span>× 不利</span><span>? 未検証</span></div>
+</section>
+
+<!-- ============ 第3章 ============ -->
+<section class="ch" id="ch3">
+  <div class="chhead"><div><div class="code"><b>●</b> 03 — HYPOTHESES</div><h2>あるべき仮説</h2></div></div>
+  <p class="lead">{{第2章を踏まえ、何を仮説として置くか}}</p>
+
+  <h3 id="s31"><span class="no">3-1</span>仮説を一文で</h3>
+  <div class="card key"><p id="hyp1" style="font-size:16px;font-weight:700;color:var(--navy);margin:0">{{仮説の一文}}</p></div>
+
+  <h3 id="s32"><span class="no">3-2</span>{{N}}つの仮説と確かめ方</h3>
+  <div class="tblwrap"><table class="tight brk">
+    <thead><tr><th>#</th><th style="width:28%">仮説</th><th>確かめ方</th><th style="width:22%">外れたら</th><th style="width:14%">担当・期限</th></tr></thead>
+    <tbody>
+      <tr><th>H1</th><td>{{仮説}}</td><td>{{測るもの・聞くこと}}</td><td>{{次の手}}</td><td>{{担当}}・{{期限}}</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3 id="s33"><span class="no">3-3</span>{{数字で見た成立条件／道の選び方}}</h3>
+  <div class="fig">
+    <div class="ttl">{{図のタイトル}}</div>
+    <svg viewBox="0 0 600 220" role="img" aria-label="{{図の結論を一文で}}">
+      <line x1="60" y1="190" x2="580" y2="190" stroke="#C9CACE"/><line x1="60" y1="20" x2="60" y2="190" stroke="#C9CACE"/>
+      <text x="320" y="214" font-size="12" fill="#555C66" text-anchor="middle">{{横軸}}</text>
+      <text x="16" y="110" font-size="12" fill="#555C66" transform="rotate(-90 16 110)" text-anchor="middle">{{縦軸}}</text>
+      <circle cx="170" cy="140" r="9" fill="#C9CACE"/><text x="185" y="144" font-size="13" fill="#232B38">{{今の計画}}</text>
+      <circle cx="440" cy="60" r="9" fill="#1470FF"/><text x="455" y="64" font-size="13" fill="#10203A" font-weight="700">{{目指す位置}}</text>
+    </svg>
+  </div>
+
+  <h3 id="s3z"><span class="no">3-4</span>次の一手</h3>
+  <ol id="next"><li>{{行動。誰が、いつまでに}}</li></ol>
+</section>
+
+<!-- ============ 第4章 ============ -->
+<section class="ch" id="ch4">
+  <div class="chhead"><div><div class="code"><b>●</b> 04 — QUESTIONS</div><h2>{{第4章の名前}}</h2></div></div>
+  <p class="lead">{{何を伺いたいか。仮の答えはたたき台であること}}</p>
+
+  <h3 id="s41"><span class="no">4-1</span>論点ごとの背景と仮の答え</h3>
+  <div class="q" id="q1"><div class="qh"><span class="n">Q1</span><span class="t">{{論点の見出し}}</span><span class="pri">最優先</span></div><div class="qb"><dl>
+    <dt>伺いたいこと</dt><dd class="ask">{{問い。はい／いいえで終わらない形}}</dd>
+    <dt>背景</dt><dd><ul><li>{{事実。節番号で参照（1-2）}}</li></ul></dd>
+    <dt>Claudeの仮の答え</dt><dd>{{たたき台}}</dd>
+    <dt>答えで変わること</dt><dd>{{資料、計画、営業先など}}</dd>
+  </dl></div></div>
+  <div class="q" id="q2"><div class="qh"><span class="n">Q2</span><span class="t">{{論点の見出し}}</span><span class="pri b">次に</span></div><div class="qb"><dl>
+    <dt>伺いたいこと</dt><dd class="ask">{{}}</dd>
+    <dt>背景</dt><dd>{{}}</dd>
+    <dt>Claudeの仮の答え</dt><dd>{{}}</dd>
+    <dt>答えで変わること</dt><dd>{{}}</dd>
+  </dl></div></div>
+
+  <h3 id="s42"><span class="no">4-2</span>{{問い返されそうなこと／アジェンダ案}}</h3>
+  <ul><li><b>{{問い}}</b> {{短い答えと参照先}}</li></ul>
+</section>
+
+<!-- ============ 付録 ============ -->
+<section class="ch" id="apx">
+  <div class="chhead"><div><div class="code"><b>●</b> A — APPENDIX</div><h2>出典と用語</h2></div></div>
+  <h3 id="a1"><span class="no">A-1</span>出典</h3>
+  <ol class="small srcl">
+    <li id="S1">{{資料名・発行元・日付・URL}}<span class="conf hi">確度 高</span></li>
+    <li id="S2">{{}}<span class="conf md">確度 中</span></li>
+  </ol>
+  <h3 id="a2"><span class="no">A-2</span>用語</h3>
+  <div class="tblwrap"><table class="tight"><tbody>
+    <tr><th>{{用語}}</th><td>{{一文の説明}}</td></tr>
+  </tbody></table></div>
+</section>
+
+<footer><span>{{BRAND}}</span><span>{{CONFIDENTIAL}}　{{YYYY.MM.DD}}　v{{版}}</span></footer>
+</main>
+</div>
+<script>
+/* 1ページ要約：空の欄を本文から自動で埋め、印刷・コピーを行う。中身が書いてある欄はそのまま使う */
+(function(){
+  var op=document.getElementById('onepager'); if(!op) return;
+  var wrap=op.closest('details');
+  function all(s){return Array.prototype.slice.call(document.querySelectorAll(s));}
+  function txt(e){return e?e.textContent.replace(/\s+/g,' ').trim():'';}
+  function first(t){t=(t||'').trim();var i=t.indexOf('。');return i>0?t.slice(0,i+1):t;}
+  function fill(key,items,max){
+    var el=op.querySelector('[data-auto="'+key+'"]'); if(!el) return;
+    if(!el.textContent.trim()){
+      items.filter(function(x){return x;}).slice(0,max||99).forEach(function(t){
+        var li=document.createElement(el.tagName==='P'?'span':'li'); li.textContent=t; el.appendChild(li);
+      });
+    }
+    if(!el.textContent.trim()){ el.hidden=true; var h=el.previousElementSibling; if(h&&h.tagName==='H5') h.hidden=true; }
+  }
+  fill('decisions',all('#decisions li').map(txt),3);
+  fill('conclusions',all('.concl .c').map(function(c){var p=c.querySelector('p'),b=c.querySelector('b');if(!b) return first(txt(p));var rest=txt(p).slice(txt(b).length).trim();return txt(b)+(rest?' '+first(rest):'');}),4);
+  fill('hypothesis',[txt(document.getElementById('hyp1'))],1);
+  var tiles=all('.tiles .tile').slice(0,4);
+  var kpi=op.querySelector('[data-auto="kpi"]');
+  if(kpi&&!kpi.textContent.trim()){tiles.forEach(function(t){var s=document.createElement('span');var b=document.createElement('b');b.textContent=txt(t.querySelector('.v'));s.appendChild(b);s.appendChild(document.createTextNode(txt(t.querySelector('.l'))));kpi.appendChild(s);});}
+  if(kpi&&!kpi.textContent.trim()){kpi.hidden=true;var h=kpi.previousElementSibling;if(h)h.hidden=true;}
+  fill('questions',all('.q').filter(function(q){return !q.querySelector('.pri.b');}).map(function(q){
+    var a='';all('#'+q.id+' dt').forEach(function(dt){if(/仮の答え/.test(dt.textContent)) a=first(txt(dt.nextElementSibling));});
+    return txt(q.querySelector('.t'))+(a?' → '+a:'');
+  }),4);
+  fill('next',all('#next li').map(txt),3);
+
+  function openIt(){ if(wrap) wrap.open=true; }
+  window.addEventListener('beforeprint',openIt);
+  window.addEventListener('afterprint',function(){document.body.classList.remove('print-summary');});
+  var msg=op.querySelector('.op-msg');
+  op.querySelector('[data-act="print-summary"]').addEventListener('click',function(){openIt();document.body.classList.add('print-summary');window.print();});
+  op.querySelector('[data-act="print-all"]').addEventListener('click',function(){openIt();window.print();});
+  op.querySelector('[data-act="copy"]').addEventListener('click',function(){
+    openIt();
+    var body=op.querySelector('.op-body'), lines=[];
+    Array.prototype.forEach.call(body.querySelectorAll('.op-title,.op-meta,h5,li,p,.op-kpi span,.op-foot'),function(e){
+      if(e.closest('[hidden]')) return;
+      if(e.tagName==='P'&&e.closest('li')) return;
+      var t=txt(e); if(!t) return;
+      if(e.tagName==='H5') lines.push('','■ '+t); else if(e.tagName==='LI') lines.push('・'+t);
+      else if(e.parentNode&&e.parentNode.getAttribute&&e.parentNode.getAttribute('data-auto')==='kpi') lines.push('・'+t); else lines.push(t);
+    });
+    var text=lines.join('\n');
+    function done(ok){ if(msg){msg.textContent=ok?'コピーしました':'コピーできませんでした。手で選択してください';setTimeout(function(){msg.textContent='';},2500);} }
+    try{ navigator.clipboard.writeText(text).then(function(){done(true);},function(){done(false);}); }catch(e){ done(false); }
+  });
+})();
+</script>
+<script>
+/* 試算スライダー：.calc 内の input[data-var] を動かすと、[data-expr] の式を計算して表示する。
+   data-fmt は小数の桁数、data-ok は「良い」条件の式（true で .ok、false で .ng）。式は作成者が書いたものだけを使う */
+(function(){
+  function fmt(n,d){ if(typeof n!=='number'||!isFinite(n)) return '—'; d=(d===undefined||d==='')?1:+d; return n.toLocaleString('ja-JP',{minimumFractionDigits:0,maximumFractionDigits:d}); }
+  function ev(expr,v){ try{ var k=Object.keys(v); return Function.apply(null,k.concat('return ('+expr+');')).apply(null,k.map(function(x){return v[x];})); }catch(e){ return NaN; } }
+  Array.prototype.forEach.call(document.querySelectorAll('.calc'),function(c){
+    var ins=c.querySelectorAll('input[data-var]'), outs=c.querySelectorAll('[data-expr]');
+    var init={}; Array.prototype.forEach.call(ins,function(i){init[i.dataset.var]=i.value;});
+    function upd(){
+      var v={}; try{ v=JSON.parse(c.dataset.const||'{}'); }catch(e){}
+      Array.prototype.forEach.call(ins,function(i){
+        v[i.dataset.var]=parseFloat(i.value);
+        var s=c.querySelector('[data-show="'+i.dataset.var+'"]'); if(s) s.textContent=fmt(v[i.dataset.var],i.dataset.fmt)+(i.dataset.unit||'');
+      });
+      Array.prototype.forEach.call(outs,function(o){
+        var r=ev(o.dataset.expr,v); o.textContent=fmt(r,o.dataset.fmt);
+        if(o.dataset.ok){ var t=o.closest('.tile')||o; var good=!!ev(o.dataset.ok,Object.assign({x:r},v)); t.classList.toggle('ok',good); t.classList.toggle('ng',!good); }
+      });
+    }
+    Array.prototype.forEach.call(ins,function(i){ i.addEventListener('input',upd); });
+    var rb=c.querySelector('.reset'); if(rb) rb.addEventListener('click',function(){ Array.prototype.forEach.call(ins,function(i){i.value=init[i.dataset.var];}); upd(); });
+    upd();
+  });
+})();
+
+/* スライド表示：表紙・導入・章の頭・各節（h3ごと）を1枚にして、← → で送る。Esc で戻る */
+(function(){
+  var main=document.querySelector('main'); if(!main) return;
+  var units=[], idx=0, built=false;
+  var bar=document.createElement('div'); bar.className='slidebar';
+  bar.innerHTML='<button type="button" data-s="prev">← 前へ</button><span class="cnt"></span><button type="button" data-s="next">次へ →</button><button type="button" data-s="exit">スライドを終了</button>';
+  document.body.appendChild(bar);
+  var vb=document.createElement('div'); vb.className='viewbar';
+  vb.innerHTML='<button type="button" title="← → で送る、Esc で終了">スライド表示</button>';
+  document.body.appendChild(vb);
+  function build(){
+    if(built) return; built=true;
+    Array.prototype.forEach.call(main.children,function(el){
+      if(el.matches('header.cover')||(el.tagName==='SECTION'&&!el.classList.contains('ch'))){ el.classList.add('unit'); units.push(el); return; }
+      if(el.tagName==='SECTION'&&el.classList.contains('ch')){
+        var kids=Array.prototype.slice.call(el.children), cur=null;
+        kids.forEach(function(k){
+          if(!cur||k.tagName==='H3'){ cur=document.createElement('div'); cur.className='unit'; el.insertBefore(cur,k); units.push(cur); }
+          cur.appendChild(k);
+        });
+      }
+    });
+  }
+  function show(i){
+    idx=Math.max(0,Math.min(units.length-1,i));
+    units.forEach(function(u,j){ u.classList.toggle('cur',j===idx); });
+    Array.prototype.forEach.call(main.querySelectorAll('section.ch'),function(s){ s.classList.toggle('off',!s.querySelector('.unit.cur')); });
+    bar.querySelector('.cnt').textContent=(idx+1)+' / '+units.length;
+    window.scrollTo(0,0);
+  }
+  function start(){ build(); document.body.classList.add('slide-mode'); show(idx); }
+  function exit(){ document.body.classList.remove('slide-mode'); var u=units[idx]; if(u) u.scrollIntoView(); }
+  vb.querySelector('button').addEventListener('click',start);
+  bar.addEventListener('click',function(e){ var s=e.target.getAttribute('data-s'); if(s==='prev') show(idx-1); if(s==='next') show(idx+1); if(s==='exit') exit(); });
+  document.addEventListener('keydown',function(e){
+    if(!document.body.classList.contains('slide-mode')) return;
+    if(e.target&&/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
+    if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){ e.preventDefault(); show(idx+1); }
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){ e.preventDefault(); show(idx-1); }
+    else if(e.key==='Escape'){ exit(); }
+  });
+  window.addEventListener('beforeprint',function(){ document.body.classList.remove('slide-mode'); });
+})();
+</script>
+
+</body>
+</html>

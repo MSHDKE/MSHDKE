@@ -1,0 +1,159 @@
+<body>
+<!--
+  PR/FAQ テンプレート（構想を、顧客に届いた日のプレスリリースと想定問答から逆算して固める）
+  使い方：{{ }} を差し替え、要らない節は消す。ルールは .claude/skills/report-formats/SKILL.md
+-->
+<div class="wrap">
+<nav class="toc" aria-label="目次">
+  <div class="brand">{{BRAND}} ／ PR-FAQ</div>
+  <a href="#top">はじめに・構想の要点</a>
+  <a href="#summary">1ページ要約（印刷・転送用）</a>
+  <a class="ch" href="#ch1"><span>01</span>プレスリリース</a>
+  <a class="ch" href="#ch2"><span>02</span>お客様向けFAQ</a>
+  <a class="ch" href="#ch3"><span>03</span>社内向けFAQ</a>
+  <a href="#s31">顧客と市場</a>
+  <a href="#s32">経済性</a>
+  <a href="#s33">実現性と依存</a>
+  <a href="#s34">リスクと撤退基準</a>
+  <a class="ch" href="#ch4"><span>04</span>まだ答えのない問い</a>
+  <a class="ch" href="#apx"><span>A</span>出典と用語</a>
+</nav>
+<main>
+
+<header class="cover" id="top">
+  <div class="code"><b>●</b> PR / FAQ — {{YYYY.MM.DD}} v{{版}}</div>
+  <h1>{{構想の名前}}</h1>
+  <p class="sub">{{このサービスが世に出た日を想定し、顧客価値と、答えるべき問いを先に固める}}</p>
+  <div class="meta"><span>作成：{{日付}}</span><span>{{作成者}}（整理：Claude）</span><span>元資料：{{主な元資料}}</span><span>{{社外秘／チーム内}}</span></div>
+</header>
+
+<details class="opwrap" id="summary">
+  <summary>1ページ要約（印刷・転送用）</summary>
+  <div class="onepager" id="onepager">
+    <div class="op-actions"><button type="button" data-act="print-summary">要約だけ印刷</button><button type="button" data-act="copy">テキストでコピー</button><button type="button" data-act="print-all">全体を印刷</button><span class="op-msg small"></span></div>
+    <div class="op-body">
+      <div class="op-head"><div class="op-title">{{構想の名前}}｜1ページ要約</div><div class="op-meta">{{YYYY.MM.DD}} v{{版}}・{{作成者}}・{{配布範囲}}</div></div>
+      <h5>この資料で決めたいこと</h5><ol data-auto="decisions"></ol>
+      <h5>構想の要点</h5><ol data-auto="conclusions"></ol>
+      <div class="op-grid">
+        <div><h5>一言でいうと</h5><p data-auto="hypothesis"></p></div>
+        <div><h5>主要な数字</h5><div class="op-kpi" data-auto="kpi"></div></div>
+      </div>
+      <h5>最優先の論点と仮の答え</h5><ul data-auto="questions"></ul>
+      <h5>次の一手</h5><ol data-auto="next"></ol>
+      <div class="op-foot">全体版：{{ファイル名またはNotionのリンク}}</div>
+    </div>
+  </div>
+</details>
+
+<section>
+  <p class="lead">{{なぜこの構想をPR/FAQで書くのか。いまの段階と、この資料で固めたいこと。2〜3文}}</p>
+  <div class="legendbar">
+    <span><span class="tag f">事実</span>資料・公開情報で確認できたこと</span>
+    <span><span class="tag h">チームの仮説</span>まだ確かめていないこと</span>
+    <span><span class="tag v">Claudeの見立て</span>AIの評価と提案</span>
+    <span><span class="tag u">未確認</span>これから確かめること</span>
+  </div>
+  <div class="card dark">
+    <div class="code"><b>●</b> DECISIONS NEEDED</div>
+    <h4>この資料で決めたいこと</h4>
+    <ol id="decisions"><li>{{例：誰の、どんな困りごとを解くサービスにするか}}</li><li>{{例：最初の顧客と地域}}</li></ol>
+  </div>
+  <div class="concl">
+    <div class="c"><div class="n">01</div><p><b>{{顧客：誰が}}</b>{{どんな人で、何に困っているか}}</p></div>
+    <div class="c"><div class="n">02</div><p><b>{{価値：何が変わるか}}</b>{{使う前と後で何が違うか}}</p></div>
+    <div class="c"><div class="n">03</div><p><b>{{なぜ私たちか}}</b>{{他社にない強み・資産}}</p></div>
+    <div class="c"><div class="n">04</div><p><b>{{一番の不確かさ}}</b>{{これが崩れると構想が成り立たないこと}}</p></div>
+  </div>
+</section>
+
+<!-- ============ 第1章 ============ -->
+<section class="ch" id="ch1">
+  <div class="chhead"><div><div class="code"><b>●</b> 01 — PRESS RELEASE</div><h2>プレスリリース（{{想定の発表日}}）</h2></div></div>
+  <p class="lead">サービスが世に出た日を想定して書きます。専門用語を使わず、顧客が読んで分かる言葉で、1ページに収めます。</p>
+  <div class="pr">
+    <div class="dateline">{{都市}}、{{YYYY年M月D日}} — {{会社名}}</div>
+    <div class="hl1">{{見出し：顧客にとって何が変わるかを一文で}}</div>
+    <p class="hl2">{{サブ見出し：誰が、どんな恩恵を受けるか}}</p>
+    <p id="hyp1">{{要約の段落：何を、誰に、いつから、どこで。最も大事な恩恵}}</p>
+    <h4>これまでの不満</h4>
+    <p>{{顧客がいま困っていること。事実と数字で}}</p>
+    <h4>解決のしかた</h4>
+    <p>{{サービスがどう解くか。仕組みより体験で書く}}</p>
+    <blockquote>{{社内の代表者の言葉：なぜこれをやるのか}}<cite>— {{名前・役職}}</cite></blockquote>
+    <h4>使い方</h4>
+    <p>{{始め方を3ステップ程度で}}</p>
+    <blockquote>{{顧客の言葉：使ってみて何が変わったか（想定）}}<cite>— {{顧客像}}</cite></blockquote>
+    <p>{{価格・提供地域・始め方の案内}}</p>
+  </div>
+</section>
+
+<!-- ============ 第2章 ============ -->
+<section class="ch" id="ch2">
+  <div class="chhead"><div><div class="code"><b>●</b> 02 — CUSTOMER FAQ</div><h2>お客様向けFAQ</h2></div></div>
+  <p class="lead">顧客が最初に聞きそうなことに、短く答えます。答えられない問いは第4章に送ります。</p>
+  <details class="faq" open><summary><span class="n">C1</span>{{いくらですか}}</summary><div class="a">{{答え}}</div></details>
+  <details class="faq"><summary><span class="n">C2</span>{{他のサービスと何が違いますか}}</summary><div class="a">{{答え}}</div></details>
+  <details class="faq"><summary><span class="n">C3</span>{{どこで使えますか／いつから使えますか}}</summary><div class="a">{{答え}}</div></details>
+</section>
+
+<!-- ============ 第3章 ============ -->
+<section class="ch" id="ch3">
+  <div class="chhead"><div><div class="code"><b>●</b> 03 — INTERNAL FAQ</div><h2>社内向けFAQ</h2></div></div>
+  <p class="lead">出資する側・経営が聞くことに答えます。根拠にはタグと出典を付けます。</p>
+
+  <h3 id="s31"><span class="no">3-1</span>顧客と市場</h3>
+  <details class="faq" open><summary><span class="n">I1</span>{{顧客は何人いて、いま何にお金を払っていますか}}</summary><div class="a"><p><span class="tag f">事実</span>{{}}</p></div></details>
+  <div class="tiles">
+    <div class="tile"><div class="l">{{市場規模}}</div><div class="v">{{数字}}<small>{{単位}}</small></div></div>
+    <div class="tile"><div class="l">{{狙う顧客数}}</div><div class="v">{{数字}}<small>{{単位}}</small></div></div>
+    <div class="tile"><div class="l">{{価格}}</div><div class="v">{{数字}}<small>{{単位}}</small></div></div>
+    <div class="tile"><div class="l">{{初期投資}}</div><div class="v">{{数字}}<small>{{単位}}</small></div></div>
+  </div>
+
+  <h3 id="s32"><span class="no">3-2</span>経済性</h3>
+  <details class="faq" open><summary><span class="n">I2</span>{{1顧客あたりで儲かりますか。何年で回収できますか}}</summary><div class="a"><p><span class="tag v">Claudeの見立て</span>{{}}</p></div></details>
+  <div class="calc">
+    <div class="ttl">{{ユニットエコノミクスの試算}}</div>
+    <div class="ctl"><label>{{顧客1人の年間売上}}<small>{{根拠}}</small></label><input type="range" data-var="arpu" min="1000" max="20000" step="500" value="6000" data-fmt="0" data-unit="円"><span class="val" data-show="arpu"></span></div>
+    <div class="ctl"><label>{{粗利率}}<small>{{根拠}}</small></label><input type="range" data-var="gm" min="10" max="80" step="5" value="40" data-fmt="0" data-unit="%"><span class="val" data-show="gm"></span></div>
+    <div class="ctl"><label>{{1人の獲得費}}<small>{{根拠}}</small></label><input type="range" data-var="cac" min="500" max="20000" step="500" value="3000" data-fmt="0" data-unit="円"><span class="val" data-show="cac"></span></div>
+    <div class="res">
+      <div class="tile"><div class="l">1人の年間粗利（円）</div><div class="v" data-expr="arpu*gm/100" data-fmt="0"></div></div>
+      <div class="tile"><div class="l">獲得費の回収（か月）</div><div class="v" data-expr="cac/(arpu*gm/100/12)" data-fmt="1" data-ok="x<=12"></div><div class="d">12か月以内なら青</div></div>
+      <div class="tile"><div class="l">粗利÷獲得費（倍）</div><div class="v" data-expr="arpu*gm/100/cac" data-fmt="1" data-ok="x>=1"></div></div>
+    </div>
+    <button type="button" class="reset">前提を元に戻す</button>
+  </div>
+
+  <h3 id="s33"><span class="no">3-3</span>実現性と依存</h3>
+  <details class="faq" open><summary><span class="n">I3</span>{{何がそろえば作れますか。誰に依存しますか}}</summary><div class="a">{{}}</div></details>
+
+  <h3 id="s34"><span class="no">3-4</span>リスクと撤退基準</h3>
+  <div class="tblwrap"><table class="tight">
+    <thead><tr><th style="width:28%">リスク</th><th>起きたら</th><th style="width:28%">撤退・見直しの基準</th></tr></thead>
+    <tbody><tr><th class="wrapok">{{}}</th><td>{{}}</td><td>{{いつまでに何がどの水準でなければ}}</td></tr></tbody>
+  </table></div>
+</section>
+
+<!-- ============ 第4章 ============ -->
+<section class="ch" id="ch4">
+  <div class="chhead"><div><div class="code"><b>●</b> 04 — OPEN QUESTIONS</div><h2>まだ答えのない問い</h2></div></div>
+  <p class="lead">PR/FAQを書いて、答えられなかった問いです。ここが次に確かめることになります。</p>
+  <div class="q" id="q1"><div class="qh"><span class="n">Q1</span><span class="t">{{問い}}</span><span class="pri">最優先</span></div><div class="qb"><dl>
+    <dt>なぜ答えられないか</dt><dd>{{足りない情報}}</dd>
+    <dt>Claudeの仮の答え</dt><dd>{{たたき台}}</dd>
+    <dt>確かめ方</dt><dd>{{誰に、何を、いつまでに}}</dd>
+  </dl></div></div>
+  <h3 id="s41"><span class="no">4-1</span>次の一手</h3>
+  <ol id="next"><li>{{行動。誰が、いつまでに}}</li></ol>
+</section>
+
+<section class="ch" id="apx">
+  <div class="chhead"><div><div class="code"><b>●</b> A — APPENDIX</div><h2>出典と用語</h2></div></div>
+  <ol class="small srcl"><li id="S1">{{資料名・日付・URL}}<span class="conf hi">確度 高</span></li></ol>
+</section>
+
+<footer><span>{{BRAND}} ／ PR-FAQ</span><span>{{CONFIDENTIAL}}　{{YYYY.MM.DD}}　v{{版}}</span></footer>
+</main>
+</div>

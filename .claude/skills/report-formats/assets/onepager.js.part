@@ -1,0 +1,52 @@
+<script>
+/* 1ページ要約：空の欄を本文から自動で埋め、印刷・コピーを行う。中身が書いてある欄はそのまま使う */
+(function(){
+  var op=document.getElementById('onepager'); if(!op) return;
+  var wrap=op.closest('details');
+  function all(s){return Array.prototype.slice.call(document.querySelectorAll(s));}
+  function txt(e){return e?e.textContent.replace(/\s+/g,' ').trim():'';}
+  function first(t){t=(t||'').trim();var i=t.indexOf('。');return i>0?t.slice(0,i+1):t;}
+  function fill(key,items,max){
+    var el=op.querySelector('[data-auto="'+key+'"]'); if(!el) return;
+    if(!el.textContent.trim()){
+      items.filter(function(x){return x;}).slice(0,max||99).forEach(function(t){
+        var li=document.createElement(el.tagName==='P'?'span':'li'); li.textContent=t; el.appendChild(li);
+      });
+    }
+    if(!el.textContent.trim()){ el.hidden=true; var h=el.previousElementSibling; if(h&&h.tagName==='H5') h.hidden=true; }
+  }
+  fill('decisions',all('#decisions li').map(txt),3);
+  fill('conclusions',all('.concl .c').map(function(c){var p=c.querySelector('p'),b=c.querySelector('b');if(!b) return first(txt(p));var rest=txt(p).slice(txt(b).length).trim();return txt(b)+(rest?' '+first(rest):'');}),4);
+  fill('hypothesis',[txt(document.getElementById('hyp1'))],1);
+  var tiles=all('.tiles .tile').slice(0,4);
+  var kpi=op.querySelector('[data-auto="kpi"]');
+  if(kpi&&!kpi.textContent.trim()){tiles.forEach(function(t){var s=document.createElement('span');var b=document.createElement('b');b.textContent=txt(t.querySelector('.v'));s.appendChild(b);s.appendChild(document.createTextNode(txt(t.querySelector('.l'))));kpi.appendChild(s);});}
+  if(kpi&&!kpi.textContent.trim()){kpi.hidden=true;var h=kpi.previousElementSibling;if(h)h.hidden=true;}
+  fill('questions',all('.q').filter(function(q){return !q.querySelector('.pri.b');}).map(function(q){
+    var a='';all('#'+q.id+' dt').forEach(function(dt){if(/仮の答え/.test(dt.textContent)) a=first(txt(dt.nextElementSibling));});
+    return txt(q.querySelector('.t'))+(a?' → '+a:'');
+  }),4);
+  fill('next',all('#next li').map(txt),3);
+
+  function openIt(){ if(wrap) wrap.open=true; }
+  window.addEventListener('beforeprint',openIt);
+  window.addEventListener('afterprint',function(){document.body.classList.remove('print-summary');});
+  var msg=op.querySelector('.op-msg');
+  op.querySelector('[data-act="print-summary"]').addEventListener('click',function(){openIt();document.body.classList.add('print-summary');window.print();});
+  op.querySelector('[data-act="print-all"]').addEventListener('click',function(){openIt();window.print();});
+  op.querySelector('[data-act="copy"]').addEventListener('click',function(){
+    openIt();
+    var body=op.querySelector('.op-body'), lines=[];
+    Array.prototype.forEach.call(body.querySelectorAll('.op-title,.op-meta,h5,li,p,.op-kpi span,.op-foot'),function(e){
+      if(e.closest('[hidden]')) return;
+      if(e.tagName==='P'&&e.closest('li')) return;
+      var t=txt(e); if(!t) return;
+      if(e.tagName==='H5') lines.push('','■ '+t); else if(e.tagName==='LI') lines.push('・'+t);
+      else if(e.parentNode&&e.parentNode.getAttribute&&e.parentNode.getAttribute('data-auto')==='kpi') lines.push('・'+t); else lines.push(t);
+    });
+    var text=lines.join('\n');
+    function done(ok){ if(msg){msg.textContent=ok?'コピーしました':'コピーできませんでした。手で選択してください';setTimeout(function(){msg.textContent='';},2500);} }
+    try{ navigator.clipboard.writeText(text).then(function(){done(true);},function(){done(false);}); }catch(e){ done(false); }
+  });
+})();
+</script>

@@ -1,0 +1,70 @@
+<script>
+/* 試算スライダー：.calc 内の input[data-var] を動かすと、[data-expr] の式を計算して表示する。
+   data-fmt は小数の桁数、data-ok は「良い」条件の式（true で .ok、false で .ng）。式は作成者が書いたものだけを使う */
+(function(){
+  function fmt(n,d){ if(typeof n!=='number'||!isFinite(n)) return '—'; d=(d===undefined||d==='')?1:+d; return n.toLocaleString('ja-JP',{minimumFractionDigits:0,maximumFractionDigits:d}); }
+  function ev(expr,v){ try{ var k=Object.keys(v); return Function.apply(null,k.concat('return ('+expr+');')).apply(null,k.map(function(x){return v[x];})); }catch(e){ return NaN; } }
+  Array.prototype.forEach.call(document.querySelectorAll('.calc'),function(c){
+    var ins=c.querySelectorAll('input[data-var]'), outs=c.querySelectorAll('[data-expr]');
+    var init={}; Array.prototype.forEach.call(ins,function(i){init[i.dataset.var]=i.value;});
+    function upd(){
+      var v={}; try{ v=JSON.parse(c.dataset.const||'{}'); }catch(e){}
+      Array.prototype.forEach.call(ins,function(i){
+        v[i.dataset.var]=parseFloat(i.value);
+        var s=c.querySelector('[data-show="'+i.dataset.var+'"]'); if(s) s.textContent=fmt(v[i.dataset.var],i.dataset.fmt)+(i.dataset.unit||'');
+      });
+      Array.prototype.forEach.call(outs,function(o){
+        var r=ev(o.dataset.expr,v); o.textContent=fmt(r,o.dataset.fmt);
+        if(o.dataset.ok){ var t=o.closest('.tile')||o; var good=!!ev(o.dataset.ok,Object.assign({x:r},v)); t.classList.toggle('ok',good); t.classList.toggle('ng',!good); }
+      });
+    }
+    Array.prototype.forEach.call(ins,function(i){ i.addEventListener('input',upd); });
+    var rb=c.querySelector('.reset'); if(rb) rb.addEventListener('click',function(){ Array.prototype.forEach.call(ins,function(i){i.value=init[i.dataset.var];}); upd(); });
+    upd();
+  });
+})();
+
+/* スライド表示：表紙・導入・章の頭・各節（h3ごと）を1枚にして、← → で送る。Esc で戻る */
+(function(){
+  var main=document.querySelector('main'); if(!main) return;
+  var units=[], idx=0, built=false;
+  var bar=document.createElement('div'); bar.className='slidebar';
+  bar.innerHTML='<button type="button" data-s="prev">← 前へ</button><span class="cnt"></span><button type="button" data-s="next">次へ →</button><button type="button" data-s="exit">スライドを終了</button>';
+  document.body.appendChild(bar);
+  var vb=document.createElement('div'); vb.className='viewbar';
+  vb.innerHTML='<button type="button" title="← → で送る、Esc で終了">スライド表示</button>';
+  document.body.appendChild(vb);
+  function build(){
+    if(built) return; built=true;
+    Array.prototype.forEach.call(main.children,function(el){
+      if(el.matches('header.cover')||(el.tagName==='SECTION'&&!el.classList.contains('ch'))){ el.classList.add('unit'); units.push(el); return; }
+      if(el.tagName==='SECTION'&&el.classList.contains('ch')){
+        var kids=Array.prototype.slice.call(el.children), cur=null;
+        kids.forEach(function(k){
+          if(!cur||k.tagName==='H3'){ cur=document.createElement('div'); cur.className='unit'; el.insertBefore(cur,k); units.push(cur); }
+          cur.appendChild(k);
+        });
+      }
+    });
+  }
+  function show(i){
+    idx=Math.max(0,Math.min(units.length-1,i));
+    units.forEach(function(u,j){ u.classList.toggle('cur',j===idx); });
+    Array.prototype.forEach.call(main.querySelectorAll('section.ch'),function(s){ s.classList.toggle('off',!s.querySelector('.unit.cur')); });
+    bar.querySelector('.cnt').textContent=(idx+1)+' / '+units.length;
+    window.scrollTo(0,0);
+  }
+  function start(){ build(); document.body.classList.add('slide-mode'); show(idx); }
+  function exit(){ document.body.classList.remove('slide-mode'); var u=units[idx]; if(u) u.scrollIntoView(); }
+  vb.querySelector('button').addEventListener('click',start);
+  bar.addEventListener('click',function(e){ var s=e.target.getAttribute('data-s'); if(s==='prev') show(idx-1); if(s==='next') show(idx+1); if(s==='exit') exit(); });
+  document.addEventListener('keydown',function(e){
+    if(!document.body.classList.contains('slide-mode')) return;
+    if(e.target&&/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
+    if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){ e.preventDefault(); show(idx+1); }
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){ e.preventDefault(); show(idx-1); }
+    else if(e.key==='Escape'){ exit(); }
+  });
+  window.addEventListener('beforeprint',function(){ document.body.classList.remove('slide-mode'); });
+})();
+</script>

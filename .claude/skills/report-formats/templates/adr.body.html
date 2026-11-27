@@ -1,0 +1,92 @@
+<body>
+<!--
+  ADR（決定記録）テンプレート：決まったことを、理由と却下した案とともに積み上げる。
+  新しい決定は一番上に足す。覆った決定は消さずに「置き換え」にして、新しい決定へリンクする。
+-->
+<div class="wrap">
+<nav class="toc" aria-label="目次">
+  <div class="brand">{{BRAND}} ／ DECISION LOG</div>
+  <a href="#top">はじめに・決定の一覧</a>
+  <a href="#summary">1ページ要約（印刷・転送用）</a>
+  <a class="ch" href="#ch1"><span>01</span>決定</a>
+  <a href="#d3">D-003 {{見出し}}</a>
+  <a href="#d2">D-002 {{見出し}}</a>
+  <a href="#d1">D-001 {{見出し}}</a>
+  <a class="ch" href="#ch2"><span>02</span>決まっていないこと</a>
+  <a class="ch" href="#apx"><span>A</span>出典</a>
+</nav>
+<main>
+
+<header class="cover" id="top">
+  <div class="code"><b>●</b> DECISION LOG — {{YYYY.MM.DD}} 更新</div>
+  <h1>{{プロジェクト名}} 決定記録</h1>
+  <p class="sub">決まったこと、その理由、選ばなかった案を残す。議論を蒸し返さないための記録</p>
+  <div class="meta"><span>最終更新：{{日付}}</span><span>記録：{{作成者}}（整理：Claude）</span><span>{{社外秘／チーム内}}</span></div>
+</header>
+
+<details class="opwrap" id="summary">
+  <summary>1ページ要約（印刷・転送用）</summary>
+  <div class="onepager" id="onepager">
+    <div class="op-actions"><button type="button" data-act="print-summary">要約だけ印刷</button><button type="button" data-act="copy">テキストでコピー</button><button type="button" data-act="print-all">全体を印刷</button><span class="op-msg small"></span></div>
+    <div class="op-body">
+      <div class="op-head"><div class="op-title">{{プロジェクト名}} 決定記録｜1ページ要約</div><div class="op-meta">{{YYYY.MM.DD}}・{{配布範囲}}</div></div>
+      <h5>有効な決定</h5><ol data-auto="conclusions"></ol>
+      <h5>決まっていないこと</h5><ol data-auto="next"></ol>
+      <div class="op-foot">全体版：{{ファイル名またはNotionのリンク}}</div>
+    </div>
+  </div>
+</details>
+
+<section>
+  <p class="lead">{{この記録の範囲（どのプロジェクトの、いつからの決定か）と、決定の扱い方}}</p>
+  <!-- 1ページ要約の「有効な決定」は、ここの .concl から自動で取る。有効な決定だけを並べる -->
+  <div class="concl">
+    <div class="c"><div class="n">D-003</div><p><b>{{決定の一文}}</b>{{日付}}・{{決めた人}}</p></div>
+    <div class="c"><div class="n">D-002</div><p><b>{{決定の一文}}</b>{{日付}}・{{決めた人}}</p></div>
+  </div>
+  <div class="tblwrap"><table class="tight">
+    <thead><tr><th>#</th><th>決定</th><th>日付</th><th>状態</th></tr></thead>
+    <tbody>
+      <tr><th><a href="#d3">D-003</a></th><td>{{}}</td><td class="num">{{}}</td><td><span class="st acc">決定</span></td></tr>
+      <tr><th><a href="#d2">D-002</a></th><td>{{}}</td><td class="num">{{}}</td><td><span class="st pro">提案中</span></td></tr>
+      <tr><th><a href="#d1">D-001</a></th><td>{{}}</td><td class="num">{{}}</td><td><span class="st sup">置き換え</span> → D-003</td></tr>
+    </tbody>
+  </table></div>
+  <div class="keyrow"><span><span class="st acc">決定</span></span><span><span class="st pro">提案中</span></span><span><span class="st sup">置き換え</span></span><span><span class="st rej">見送り</span></span></div>
+</section>
+
+<section class="ch" id="ch1">
+  <div class="chhead"><div><div class="code"><b>●</b> 01 — DECISIONS</div><h2>決定</h2></div></div>
+
+  <div class="adr" id="d3"><div class="ah"><span class="n">D-003</span><span class="t">{{決定の見出し}}</span><span class="d">{{YYYY.MM.DD}}</span><span class="st acc">決定</span></div><dl>
+    <dt>状況</dt><dd>{{何が問題で、なぜいま決める必要があったか。事実で}}</dd>
+    <dt>決定</dt><dd class="dec">{{決めたこと。一文で}}</dd>
+    <dt>理由</dt><dd>{{決め手。根拠と出典（S1）}}</dd>
+    <dt>選ばなかった案</dt><dd><ul><li><b>{{案A}}</b>：{{却下の理由}}</li><li><b>{{案B}}</b>：{{却下の理由}}</li></ul></dd>
+    <dt>影響</dt><dd>{{この決定で変わること・やること・できなくなること}}</dd>
+    <dt>見直す条件</dt><dd>{{何が起きたら決め直すか}}</dd>
+    <dt>決めた人</dt><dd>{{名前}}（参加：{{}}）。{{会議名・日付}}</dd>
+  </dl></div>
+
+  <div class="adr" id="d2"><div class="ah"><span class="n">D-002</span><span class="t">{{決定の見出し}}</span><span class="d">{{YYYY.MM.DD}}</span><span class="st pro">提案中</span></div><dl>
+    <dt>状況</dt><dd>{{}}</dd><dt>提案</dt><dd class="dec">{{}}</dd><dt>決める人・期限</dt><dd>{{}}</dd>
+  </dl></div>
+
+  <div class="adr" id="d1"><div class="ah"><span class="n">D-001</span><span class="t">{{決定の見出し}}</span><span class="d">{{YYYY.MM.DD}}</span><span class="st sup">置き換え</span></div><dl>
+    <dt>決定</dt><dd class="dec">{{当時の決定}}</dd><dt>置き換え</dt><dd><a href="#d3">D-003</a> で{{何が変わったか}}</dd>
+  </dl></div>
+</section>
+
+<section class="ch" id="ch2">
+  <div class="chhead"><div><div class="code"><b>●</b> 02 — OPEN</div><h2>決まっていないこと</h2></div></div>
+  <ol id="next"><li>{{決めること}}（{{決める人}}・{{期限}}）</li></ol>
+</section>
+
+<section class="ch" id="apx">
+  <div class="chhead"><div><div class="code"><b>●</b> A — APPENDIX</div><h2>出典</h2></div></div>
+  <ol class="small srcl"><li id="S1">{{議事録・資料名・日付}}</li></ol>
+</section>
+
+<footer><span>{{BRAND}} ／ DECISION LOG</span><span>{{CONFIDENTIAL}}　{{YYYY.MM.DD}}</span></footer>
+</main>
+</div>
